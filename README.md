@@ -1,4 +1,4 @@
 oozappa
 =======
 
-Fabric task runner and helper. Execute tasks on web browser.
+Fabric task runner and helper. Execute tasks via web browser.
