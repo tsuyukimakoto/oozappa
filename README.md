@@ -57,7 +57,7 @@ Change directory to outside environment directory.
     common		production	staging
     $ gunicorn -k flask_sockets.worker oozappa:app
 
-It's ok to move more outside.
+It's ok to move outside more.
 
 Open Safari and browse http://localhost:8000/ .
 
