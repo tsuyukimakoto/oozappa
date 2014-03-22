@@ -1,0 +1,16 @@
+Fabric==1.8.3
+Flask==0.10.1
+Flask-Sockets==0.1
+Jinja2==2.7.2
+MarkupSafe==0.19
+SQLAlchemy==0.9.3
+Werkzeug==0.9.4
+ecdsa==0.11
+gevent==1.0
+gevent-websocket==0.9.3
+greenlet==0.4.2
+gunicorn==18.0
+itsdangerous==0.23
+paramiko==1.12.3
+pycrypto==2.6.1
+wsgiref==0.1.2
