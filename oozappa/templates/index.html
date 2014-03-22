@@ -1,0 +1,53 @@
+<html>
+<head>
+  <title>gevent websocket test</title>
+<style type="text/css">
+#terminal {
+width:100%;
+height:30%;
+background-color: #aaa;
+overflow: scroll;
+}
+</style>
+</head>
+<body>
+  <h1>test</h1>
+  <div>
+    <form id="fabric_task" method='POST' action='#'>
+        <input name="fabric_path" id="fabric_path" value="sample/ops/staging"/>
+        <input name="tasks" id="tasks" value="" />
+        <input type="submit" value="run tasks">
+  <div>
+    <div id="terminal">
+    </div>
+  </div>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <script type="text/javascript">
+        $(document).ready(function(){
+          var ws;
+          var connect_to = 'ws://' + document.domain + ':' + location.port + '/run_task'
+          var connect = function() {
+            ws = new WebSocket(connect_to);
+            ws.onmessage = function(e) {
+              var over_count = $("#terminal *").length - 100; //TODO fixme
+              for(var i = 0;i < over_count;i++) {
+                $("#terminal *").get(0).remove();
+              }
+              jQuery.each(e.data.split("\n"), function(i, v) {
+                $("div#terminal").append('<div class="msg">' + v + '</div>');
+              });
+              $("div#terminal").scrollTop($("#terminal")[0].scrollHeight);
+            };
+            ws.onclose = function(e) {
+              connect();
+            }
+          };
+          connect();
+          $('form#fabric_task').submit(function(event) {
+              ws.send(JSON.stringify({fabric_path: $('#fabric_path').val(), tasks: $('#tasks').val()}));
+              return false;
+          });
+        });
+</script>
+</body>
+</html>
