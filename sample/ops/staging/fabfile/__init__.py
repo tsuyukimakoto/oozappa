@@ -1,10 +1,14 @@
 # -*- coding:utf8 -*-
-from fabric.api import task, run, local, cd
+from fabric.api import task, run, local, cd, hosts, env
 
 import time
 
 from oozappa.config import get_config
-_settings = get_config(__file__)
+_settings = get_config()
+
+from common.functions import _deploy_template_sample_a
+
+test_host = ('192.168.0.110',) #FIXME
 
 @task
 def ls():
@@ -27,3 +31,9 @@ def sleep():
 def printsetting():
     u'''print setting from staging.vars and common.vars'''
     print(_settings)
+
+@task
+@hosts(test_host)
+def deploy_template_sample_a():
+    _deploy_template_sample_a(_settings.sample_template_vars.sample_a)
+

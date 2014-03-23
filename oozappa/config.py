@@ -2,9 +2,19 @@
 import sys
 import os
 from copy import deepcopy
+import collections
 
 import logging
 logger = logging.getLogger('oozappa')
+
+def _update(d, u):
+    for k, v in u.iteritems():
+        if isinstance(v, collections.Mapping):
+            r = _update(d.get(k, {}), v)
+            d[k] = r
+        else:
+            d[k] = u[k]
+    return d
 
 class OozappaSetting(dict):
   '''dict like object. accessible with dot syntax.
@@ -21,6 +31,7 @@ class OozappaSetting(dict):
   '''
   def __init__(self, *args, **kwargs) :
     for d in args:
+      print(d)
       if type(d) is OozappaSetting or type(d) is dict:
         self.update(d)
     for key, value in kwargs.items():
@@ -36,17 +47,23 @@ class OozappaSetting(dict):
     try: return self[key]
     except: object.__getattribute__(self, key)
 
-def get_config(call_path):
+  def update(self, opt):
+    self = _update(self, opt)
+
+def common_base_path():
+  return os.path.abspath(os.path.join(os.getcwd(), '..'))
+
+def get_config():
   path_added = False
-  common_path = os.path.abspath(os.path.join(call_path, '..', '..', '..'))
-  logger.debug(common_path)
-  if not common_path in sys.path:
-    sys.path.insert(0, common_path)
+  _common_base_path = common_base_path()
+  logger.debug(_common_base_path)
+  if not _common_base_path in sys.path:
+    sys.path.insert(0, _common_base_path)
     path_added = True
   from common.vars import settings as common_settings
   _settings = deepcopy(common_settings)
   if path_added:
-    sys.path.remove(common_path)
+    sys.path.remove(_common_base_path)
   from vars import settings
   _settings.update(settings)
   return _settings
