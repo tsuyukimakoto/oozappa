@@ -24,7 +24,7 @@ see sample oozappa project(sample/ops).
     │   └── vars.py
     ├── production
     │   ├── fabfile
-    │   │   └── __ini__.py
+    │   │   └── __init__.py
     │   └── vars.py
     └── staging
         ├── fabfile
