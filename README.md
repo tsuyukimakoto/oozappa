@@ -52,7 +52,7 @@ You can run fabric task within environment directory as usual.
 
     $ cd sample/ops/staging
     $ fab printsetting
-    {'instance_type': 't1.micro', 'domain': 'localhost', 'sample_template_vars': {'sample_a': {'key_a_2': "a's 1 value from common.vars", 'key_a_1': "a's 1 value from stging.vars"}}, 'email': 'mtsuyuki at gmail.com'}
+    {'instance_type': 't1.micro', 'domain': 'localhost', 'sample_template_vars': {'sample_a': {'key_a_2': "a's 2 value from common.vars", 'key_a_1': "a's 1 value from stging.vars"}}, 'email': 'mtsuyuki at gmail.com'}
 
 See common/vars.py and staging/vars.py .
 
