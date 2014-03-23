@@ -63,6 +63,8 @@ Same as vars, __oozappa.fabrictools.upload_template__ search template. upload_te
 run fabric task via web browser.
 =======
 
+*) operation will change near future.
+
 Change directory to outside environment directory.
 
     $ cd ..
@@ -79,3 +81,13 @@ Modify left hand side input to __staging__ and click _run_tasks_. You can see wh
 Then input __ls ps__ to right hand side input and click _run_tasks_ .
 
 That's it.
+
+comming features
+=======
+
+Oozappa should manage environment and job, that is chained tasks, and execute log using database.
+
+So, comming features are
+
+* Admin interface
+* Operation interface
