@@ -21,6 +21,11 @@ see sample oozappa project(sample/ops).
     .
     ├── common
     │   ├── __init__.py
+    │   ├── files
+    │   ├── functions
+    │   │   └── __init__.py
+    │   ├── templates
+    │   │   └── sample_a.txt
     │   └── vars.py
     ├── production
     │   ├── fabfile
@@ -29,9 +34,13 @@ see sample oozappa project(sample/ops).
     └── staging
         ├── fabfile
         │   └── __init__.py
+        ├── templates
+        │   └── sample_a.txt
         └── vars.py
 
 __common__ is reserved directory. __production__ and __staging__ are environment directory. These two names are just example.
+
+## vars
 
 common and each environment's vars.py might have oozappa.config.OozappaSetting instance named settings.
 OozappaSetting is dict like object.
@@ -43,9 +52,13 @@ You can run fabric task within environment directory as usual.
 
     $ cd sample/ops/staging
     $ fab printsetting
-    {'instance_type': 't1.micro', 'domain': 'localhost', 'email': 'mtsuyuki at gmail.com'}
+    {'instance_type': 't1.micro', 'domain': 'localhost', 'sample_template_vars': {'sample_a': {'key_a_2': "a's 1 value from common.vars", 'key_a_1': "a's 1 value from stging.vars"}}, 'email': 'mtsuyuki at gmail.com'}
 
 See common/vars.py and staging/vars.py .
+
+## templates
+
+Same as vars, __oozappa.fabrictools.upload_template__ search template. upload_template is almost same as __fabric.contrib.files.upload_template__ . oozappa's upload_template doesn't accept use_jinja, because oozappa's upload_template pass use_jinja=True to fabric.contrib.files.upload_template.
 
 run fabric task via web browser.
 =======
