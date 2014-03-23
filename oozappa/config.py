@@ -7,14 +7,14 @@ import collections
 import logging
 logger = logging.getLogger('oozappa')
 
-def _update(d, u):
-    for k, v in u.iteritems():
+def _update(org, opt):
+    for k, v in opt.iteritems():
         if isinstance(v, collections.Mapping):
-            r = _update(d.get(k, {}), v)
-            d[k] = r
+            r = _update(opt.get(k, {}), v)
+            org[k] = r
         else:
-            d[k] = u[k]
-    return d
+            org[k] = u[k]
+    return org
 
 class OozappaSetting(dict):
   '''dict like object. accessible with dot syntax.

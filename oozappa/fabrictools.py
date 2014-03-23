@@ -43,7 +43,9 @@ def upload_template(filename, destination, context=None,
     mode=None):
     '''Search filename in ENVIRONMENT_DIR/templates at first and then common/templates if template_dir is not supplied.
       Call fabric.contrib.file.upload_template passing directory that is found filename, or None.
-      if template_dir passed, just call fabric.contrib.file.upload_template as usual.
+      if template_dir passed, this function just call fabric.contrib.file.upload_template as usual.
+
+      *) use_jinja option is always True and you can't pass use_jinja option to this function.
     '''
     _template_dir = template_dir
     if not _template_dir:
