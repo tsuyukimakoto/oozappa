@@ -1,0 +1,6 @@
+(staging/templates/sample_a.txt)
+staging environment use this template.
+production environment doesn't use this template.
+
+key_a_1: {{ key_a_1 }}
+key_a_2: {{ key_a_2 }}
