@@ -32,13 +32,13 @@ class OozappaSetting(dict):
   def __init__(self, *args, **kwargs) :
     for d in args:
       print(d)
-      if type(d) is OozappaSetting or type(d) is dict:
+      if isinstance(d, collections.Mapping):
         self.update(d)
     for key, value in kwargs.items():
       self[key] = value
 
   def __setattr__(self, key, value):
-    if value and type(value) is OozappaSetting or type(value) is dict:
+    if isinstance(value, collections.Mapping):
       self[key] = OozappaSetting(value)
     else:
       self[key] = value
