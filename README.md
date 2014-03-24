@@ -60,6 +60,10 @@ See common/vars.py and staging/vars.py .
 
 Same as vars, __oozappa.fabrictools.upload_template__ search template. upload_template is almost same as __fabric.contrib.files.upload_template__ . oozappa's upload_template doesn't accept use_jinja, because oozappa's upload_template pass use_jinja=True to fabric.contrib.files.upload_template.
 
+Jinja2 has inheritance template system and search template from multipul paths. fabric's upload_template accept only one template_dir string not list. __fabric doesn't assume multiplu environment__, so it's reasonable.
+Because of this, oozappa's upload_template search template path is limited only one template_dir that found filename.
+It mean that you can't store child template and parent template separately.
+
 run fabric task via web browser.
 =======
 
