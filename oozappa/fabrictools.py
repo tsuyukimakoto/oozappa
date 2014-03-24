@@ -3,6 +3,9 @@ import os
 from fabric.main import load_fabfile
 from fabric.contrib.files import upload_template as fabric_upload_template
 
+import logging
+logger = logging.getLogger('oozappa')
+
 class FabricTask(object):
     def __init__(self, task_dict):
         self._task_dict = task_dict
@@ -52,14 +55,14 @@ def upload_template(filename, destination, context=None,
         call_path = os.getcwd()
         common_path = os.path.abspath(os.path.join(call_path, '..', 'common'))
         if os.path.exists( os.path.join(call_path, TEMPLATES_DIRNAME, filename)):
-            print('found called path')
+            logger.debug('found called path')
             _template_dir = os.path.join(call_path, TEMPLATES_DIRNAME)
         elif os.path.exists( os.path.join(common_path, TEMPLATES_DIRNAME, filename)):
-            print('found common path')
+            logger.debug('found common path')
             _template_dir = os.path.join(common_path, TEMPLATES_DIRNAME)
         else:
-            print('NOT FOUND {0}'.format(os.path.join(call_path, TEMPLATES_DIRNAME, filename)))
-            print('NOT FOUND {0}'.format(os.path.join(common_path, TEMPLATES_DIRNAME, filename)))
+            logger.warn('NOT FOUND {0}'.format(os.path.join(call_path, TEMPLATES_DIRNAME, filename)))
+            logger.warn('NOT FOUND {0}'.format(os.path.join(common_path, TEMPLATES_DIRNAME, filename)))
     return fabric_upload_template(filename, destination, context=context, use_jinja=True,
         template_dir=_template_dir, use_sudo=use_sudo, backup=backup, mirror_local_mode=mirror_local_mode,
         mode=mode)
