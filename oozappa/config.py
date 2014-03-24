@@ -10,7 +10,7 @@ logger = logging.getLogger('oozappa')
 def _update(org, opt):
     for k, v in opt.iteritems():
         if isinstance(v, collections.Mapping):
-            r = _update(org.get(k, {}), v)
+            r = _update(org.get(k, OozappaSetting()), v)
             org[k] = r
         else:
             org[k] = opt[k]
