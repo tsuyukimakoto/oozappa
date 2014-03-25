@@ -23,7 +23,7 @@ see sample oozappa project(sample/ops).
     │   ├── __init__.py
     │   ├── files
     │   ├── functions
-    │   │   └── common_multiple_fabric_environment.py.py
+    │   │   └── common_multiple_fabric_environment.py
     │   ├── templates
     │   │   └── sample_a.txt
     │   └── vars.py
