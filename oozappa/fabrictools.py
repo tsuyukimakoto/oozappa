@@ -42,7 +42,7 @@ def print_task_list(path):
 TEMPLATES_DIRNAME = 'templates'
 
 def upload_template(filename, destination, context=None,
-    template_dir=None, use_sudo=False, backup=True, mirror_local_mode=False,
+    template_dir=None, use_sudo=False, backup=False, mirror_local_mode=False,
     mode=None):
     '''Search filename in ENVIRONMENT_DIR/templates at first and then common/templates if template_dir is not supplied.
       Call fabric.contrib.file.upload_template passing directory that is found filename, or None.
