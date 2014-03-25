@@ -3,10 +3,11 @@ from fabric.api import task, run, local, cd, hosts, env
 
 import time
 
-from oozappa.config import get_config
+from oozappa.config import get_config, procure_common_functions
 _settings = get_config()
 
-from common.functions import _deploy_template_sample_a
+procure_common_functions()
+from common_multiple_fabric_environment import _deploy_template_sample_a
 
 test_host = ('192.168.0.110',) #FIXME
 
@@ -19,6 +20,11 @@ def ls():
 def ps():
     u'''run ls command on local machine.'''
     local('ps ax')
+
+@task
+def sys_path():
+    import sys
+    print(sys.path)
 
 @task
 def sleep():

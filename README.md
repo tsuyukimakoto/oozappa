@@ -23,7 +23,7 @@ see sample oozappa project(sample/ops).
     │   ├── __init__.py
     │   ├── files
     │   ├── functions
-    │   │   └── __init__.py
+    │   │   └── common_multiple_fabric_environment.py.py
     │   ├── templates
     │   │   └── sample_a.txt
     │   └── vars.py
@@ -63,6 +63,10 @@ Same as vars, __oozappa.fabrictools.upload_template__ search template. upload_te
 Jinja2 has inheritance template system and search template from multipul paths. fabric's upload_template accept only one template_dir string not list. __fabric doesn't assume multiplu environment__, so it's reasonable.
 Because of this, oozappa's upload_template search template path is limited only one template_dir that found filename.
 It mean that you can't store child template and parent template separately.
+
+## common/functions
+
+Call __oozappa.config.procure_common_functions__() and add commons/functions directory to sys.path for convinient to using on multiple fabric environment.
 
 run fabric task via web browser.
 =======
