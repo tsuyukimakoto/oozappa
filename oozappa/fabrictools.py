@@ -48,6 +48,8 @@ def upload_template(filename, destination, context=None,
       Call fabric.contrib.file.upload_template passing directory that is found filename, or None.
       if template_dir passed, this function just call fabric.contrib.file.upload_template as usual.
 
+      *) backup default option is False
+
       *) use_jinja option is always True and you can't pass use_jinja option to this function.
     '''
     _template_dir = template_dir

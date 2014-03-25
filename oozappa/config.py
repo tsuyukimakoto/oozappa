@@ -57,13 +57,28 @@ def get_config():
   path_added = False
   _common_base_path = common_base_path()
   logger.debug(_common_base_path)
-  if not _common_base_path in sys.path:
-    sys.path.insert(0, _common_base_path)
-    path_added = True
-  from common.vars import settings as common_settings
-  _settings = deepcopy(common_settings)
-  if path_added:
-    sys.path.remove(_common_base_path)
-  from vars import settings
-  _settings.update(settings)
+  try:
+    if not _common_base_path in sys.path:
+      sys.path.insert(0, _common_base_path)
+      path_added = True
+    from common.vars import settings as common_settings
+    _settings = deepcopy(common_settings)
+    if path_added:
+      sys.path.remove(_common_base_path)
+  except ImportError as e:
+    _settings = OozappaSetting()
+  try:
+    from vars import settings
+    _settings.update(settings)
+  except ImportError as e:
+    pass
   return _settings
+
+def procure_common_functions():
+  u'''insert common/functions to sys.path'''
+  _common_function_path = os.path.join(common_base_path(), 'common', 'functions')
+  if not _common_function_path in sys.path:
+    if not os.path.exists(_common_function_path):
+     logging.warn('common_function directory not exists? {0}'.format(_common_function_path))
+    sys.path.insert(0, _common_function_path)
+    logger.info('common_function directory added to sys.path')
