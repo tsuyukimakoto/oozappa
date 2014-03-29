@@ -1,0 +1,16 @@
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
+</head>
+<body>
+  <div>
+    <ul>
+      <li><a href="{{ url_for('environments') }}">Environment</a></li>
+    </ul>
+  </div>
+  <h1>{% block headline %}{% endblock %}</h1>
+{% block body %}
+{% endblock %}
+</body>
+</html>

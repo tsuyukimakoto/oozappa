@@ -1,8 +1,13 @@
+# -*- coding:utf8 -*-
 import os
 import sys
 import subprocess
 import time
 import json
+
+
+from oozappa.records import Environment, Job, Jobset, ExecuteLog, get_db_session
+from oozappa.forms import EnvironmentForm
 
 import logging
 
@@ -48,10 +53,11 @@ class exec_fabric:
 
 logger.setLevel(logging.DEBUG)
 
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for, redirect
 from flask_sockets import Sockets
 
 app = Flask('oozappa')
+app.config['SECRET_KEY'] = 'ultra oozappa'
 sockets = Sockets(app)
 
 @sockets.route('/run_task')
@@ -73,30 +79,30 @@ def run_task(ws):
 def index():
   return render_template('index.html')
 
+@app.route('/environments')
+def environments():
+  session = get_db_session()
+  environment_list = session.query(Environment).all()
+  return render_template('environment_list.html', environment_list=environment_list, form=EnvironmentForm())
+
+@app.route('/add_environment', methods=['POST'])
+def add_environment():
+  form = EnvironmentForm()
+  if form.validate_on_submit():
+    session = get_db_session()
+    #TODO
+    environ = Environment()
+    environ.name=form.name.data
+    environ.sort_order=form.sort_order.data
+    environ.execute_path=form.execute_path.data
+    session.add(environ)
+    session.commit()
+    return redirect(url_for('environments'))
+  return render_template('environment_list.html', form=form)
+
 #gunicorn -k flask_sockets.worker oozappa:app
 
-# from sqlalchemy import create_engine
-# engine = create_engine('sqlite:///:memory:', echo=True) #
+# how can i pass env through different environment ?
+# Set value to env that results execute task. how?
 
-# from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
-# metadata = Base.metadata #this knows table mapping class.
-
-# metadata.create_all(engine) #create table if not exists.
-
-# from sqlalchemy.orm import sessionmaker
-# Session = sessionmaker(bind=engine)
-# session = Session()
-
-# stg_environment = Environment()
-# stg_environment.name = 'Staging'
-# stg_environment.sort_order = 2
-# stg_environment.execute_path = 'sample/ops/staging'
-# prd_environment = Environment()
-# prd_environment.name = 'Production'
-# prd_environment.sort_order = 1
-# prd_environment.execute_path = 'sample/ops/production'
-# session.add(stg_environment)
-# session.add(prd_environment)
-# session.commit()
-
-
+# JobSet organize Job, job is multiple fabric task. JobSet contains Job consists an environment and tasks.
