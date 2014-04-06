@@ -1,5 +1,6 @@
 # -*- coding:utf8 -*-
 import os
+from fabric.api import env
 from fabric.main import load_fabfile
 from fabric.contrib.files import upload_template as fabric_upload_template
 
@@ -80,6 +81,17 @@ def upload_template(filename, destination, context=None,
         template_dir=_template_dir, use_sudo=use_sudo, backup=backup, mirror_local_mode=mirror_local_mode,
         mode=mode)
 
+def only_once(f):
+  '''Task decorator. Run task only once while executing multiple task'''
+  def _f(*args, **kwargs):
+    flag_format = 'only_once_function_{0}'
+    try:
+      if not env.get(flag_format.format(f.__name__)):
+        return f(*args, **kwargs)
+      print('[ONLY ONCE] pass function [{0}]'.format(f.__name__))
+    finally:
+      env[flag_format.format(f.__name__)] = True
+  return _f
 
 
 
