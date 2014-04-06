@@ -7,7 +7,8 @@ import json
 
 
 from oozappa.records import Environment, Job, Jobset, ExecuteLog, get_db_session
-from oozappa.forms import EnvironmentForm
+from oozappa.forms import EnvironmentForm, JobForm, JobSetForm
+from oozappa.fabrictools import get_tasks
 
 import logging
 
@@ -53,7 +54,7 @@ class exec_fabric:
 
 logger.setLevel(logging.DEBUG)
 
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, request
 from flask_sockets import Sockets
 
 app = Flask('oozappa')
@@ -75,9 +76,22 @@ def run_task(ws):
   with exec_fabric(ws, data['fabric_path']) as executor:
       executor.doit(data['tasks'].split(' '))
 
+@sockets.route('/run_jobset')
+def run_jobset(ws):
+  message = ws.receive()
+  data = json.loads(message)
+  jobset_id = data.get('jobset_id')
+  session = get_db_session()
+  jobset = session.query(Jobset).get(jobset_id)
+  for job in jobset.jobs:
+    with exec_fabric(ws, job.environment.execute_path) as executor:
+      executor.doit(job.tasks.split(' '))
+
 @app.route('/')
 def index():
-  return render_template('index.html')
+  session = get_db_session()
+  jobset_list = session.query(Jobset).all()
+  return render_template('index.html', jobset_list=jobset_list)
 
 @app.route('/environments')
 def environments():
@@ -85,7 +99,7 @@ def environments():
   environment_list = session.query(Environment).all()
   return render_template('environment_list.html', environment_list=environment_list, form=EnvironmentForm())
 
-@app.route('/add_environment', methods=['POST'])
+@app.route('/environments/add', methods=['POST'])
 def add_environment():
   form = EnvironmentForm()
   if form.validate_on_submit():
@@ -99,6 +113,62 @@ def add_environment():
     session.commit()
     return redirect(url_for('environments'))
   return render_template('environment_list.html', form=form)
+
+@app.route('/emvironments/<environment_id>/', methods=['GET', 'POST'])
+def environment(environment_id):
+  session = get_db_session()
+  environ = session.query(Environment).get(environment_id)
+  error_message = None
+  form = JobForm()
+  if not environ:
+    abort(404)
+  if form.validate_on_submit():
+    not_found_tasks = get_tasks(environ.execute_path, form.tasks.data.split(' ')).get('not_found')
+    if len(not_found_tasks) == 0:
+      job = Job()
+      job.name = form.name.data
+      job.description = form.description.data
+      job.tasks = form.tasks.data
+      job.environment = environ
+      session.commit()
+      return redirect(url_for('environment', environment_id=environment_id))
+    error_message = 'tasks [{0}] not found.'.format(','.join(not_found_tasks))
+  form.environment_id.data = environ.id
+  return render_template('environment.html', form=form, environ=environ, error_message=error_message)
+
+@app.route('/jobsets')
+def jobsets():
+  session = get_db_session()
+  jobset_list = session.query(Jobset).all()
+  return render_template('jobset_list.html', jobset_list=jobset_list)
+
+@app.route('/jobsets/create', methods=['GET', 'POST'])
+def create_jobset():
+  form = JobSetForm()
+  form.job_id.choices = Job.choices()
+  session = get_db_session()
+  if form.validate_on_submit():
+    jobset = Jobset()
+    jobset.title = form.title.data
+    jobset.description = form.description.data
+    jobset.jobs = session.query(Job).filter(Job.id.in_(form.job_id.data)).all()
+    session.add(jobset)
+    session.commit()
+    return redirect(url_for('jobsets'))
+  return render_template('create_jobset.html', form=form, job_list=session.query(Job).all())
+
+@app.route('/jobsets/<jobset_id>/', methods=['GET', 'POST'])
+def jobset(jobset_id):
+  session = get_db_session()
+  jobset = session.query(Jobset).get(jobset_id)
+  # form = JobSetForm(request.form, jobset)
+  # form.job_id.choices = Job.choices()
+  # if form.validate_on_submit():
+  #   form.populate_obj(jobset)
+  #   session.add(jobset)
+  #   session.commit()
+  #   return redirect(url_for('jobset', jobset_id=jobset_id))
+  return render_template('jobset.html', form=form, jobset=jobset, job_list=session.query(Job).all())
 
 #gunicorn -k flask_sockets.worker oozappa:app
 

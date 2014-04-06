@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Oozappa - Environments ({{ environ.name }}){% endblock %}
+
+{% block headline %}Environments {{ environ.name }}{% endblock %}
+
+{% block body %}
+<div>
+  <h2>Jobs</h2>
+  {% for job in environ.jobs %}
+  <div>{{ job.name }}: {{ job.tasks }}<br />{{ job.description }}</div>
+  {% endfor %}
+</div>
+<div>
+  <h2>create Job</h2>
+{% if form.errors %}
+  <div>
+    <ul class="errors">
+        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+            {% for error in field_errors %}
+                <li>{{ form[field_name].label }}: {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+{% if error_message %}
+  <div>
+    <ul class="errors">
+      <li>{{ error_message }}</li>
+    </ul>
+  </div>
+{% endif %}
+  Possible tasks are.
+  {% for fabtask in environ.task_list() %}
+  <ul>
+    <li>{{ fabtask.name }}<br >({{ fabtask.__doc__ }})</li>
+  </ul>
+  {% endfor %}
+  <form action="{{ url_for('environment', environment_id=environ.id) }}" method="POST">
+      {{ form.csrf_token }}
+      <input type="hidden" name="environment_id" value="{{ environ.id }}" />
+      {{ form.tasks() }}
+      <div>{{ form.name.label }}: {{ form.name(size=10) }}</div>
+      <div>{{ form.description.label }}: {{ form.description(size=50) }}</div>
+      <input type="submit" value="Go">
+  </form>
+{% endblock %}

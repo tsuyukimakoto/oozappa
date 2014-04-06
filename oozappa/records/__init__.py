@@ -17,8 +17,8 @@ logger = logging.getLogger('oozappa')
 def need_task(f):
     @wraps(f)
     def inner(self, *args, **kwargs):
-        if not self.task_dict:
-            self.task_dict = load_fabfile(self.execute_path)[1]
+        if not hasattr(self, 'task_dict'):
+            self.task_dict = load_fabfile(os.path.join(self.execute_path, 'fabfile'))[1]
         return f(self, *args, **kwargs)
     return inner
 
@@ -36,8 +36,7 @@ class Environment(Base):
 
     @need_task
     def task_list(self):
-        for task in self.task_dict.values():
-            print('{0:10}: {1}'.format(task.name, task.__doc__ or ''))
+        return self.task_dict.values()
 
     def __repr__(self):
        return "<Environment(name='%s', sort_order='%d', execute_path='%s')>" % (
@@ -64,6 +63,10 @@ class Job(Base):
     environment_id = Column(Integer, ForeignKey('environment.id'))
     tasks = Column(String)
     environment = relationship("Environment", backref=backref('jobs', order_by=id))
+
+    @staticmethod
+    def choices():
+        return [(x.id, x.name) for x in get_db_session().query(Job).all()]
 
 class ExecuteLog(Base):
     __tablename__ = 'execute_log'

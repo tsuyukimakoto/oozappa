@@ -7,16 +7,27 @@
 {% block body %}
 <div>
   {% for en in environment_list %}
-  <div>{{ en.name }}: {{ en.execute_path }}</div>
+  <div><a href="{{ url_for('environment', environment_id=en.id) }}">{{ en.name }}</a>: {{ en.execute_path }}</div>
   {% endfor %}
 </div>
 <div>
   <h2>add Environment</h2>
+{% if form.errors %}
+  <div>
+    <ul class="errors">
+        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+            {% for error in field_errors %}
+                <li>{{ form[field_name].label }}: {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+  </div>
+{% endif %}
   <form action="{{ url_for('add_environment') }}" method="POST">
       {{ form.csrf_token }}
-      {{ form.name.label }} {{ form.name.errors }} {{ form.name(size=10) }}
-      {{ form.sort_order.label }} {{ form.sort_order.errors }} {{ form.sort_order(size=4) }}
-      {{ form.execute_path.label }} {{ form.execute_path.errors }} {{ form.execute_path(size=20) }}
+      <div>{{ form.name.label }}: {{ form.name(size=10) }}</div>
+      <div>{{ form.sort_order.label }}: {{ form.sort_order(size=4) }}</div>
+      <div>{{ form.execute_path.label }}: {{ form.execute_path(size=20) }}</div>
       <input type="submit" value="Go">
   </form>
 {% endblock %}

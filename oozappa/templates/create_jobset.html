@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Oozappa - add Jobset{% endblock %}
+
+{% block headline %}add Jobset{% endblock %}
+
+{% block body %}
+<div>
+  <h2>create Jobset</h2>
+{% if form.errors %}
+  <div>
+    <ul class="errors">
+        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+            {% for error in field_errors %}
+                <li>{{ form[field_name].label }}: {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+{% if error_message %}
+  <div>
+    <ul class="errors">
+      <li>{{ error_message }}</li>
+    </ul>
+  </div>
+{% endif %}
+ <form action="{{ url_for('create_jobset') }}" method="POST">
+      {{ form.csrf_token }}
+      <div>{{ form.title.description }}: {{ form.title(size=10) }}</div>
+      <div>{{ form.description.label }}: {{ form.description(size=50) }}</div>
+      <div>{{ form.job_id.label }}: {{ form.job_id() }}</div>
+      <input type="submit" value="Go">
+  </form>
+{% endblock %}

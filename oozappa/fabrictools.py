@@ -39,6 +39,17 @@ def print_task_list(path):
     for task in task_dict.values():
         print(u'{0:10}: {1}'.format(task.name, task.__doc__))
 
+def get_tasks(path, task_list):
+    tasks = FabricHelper(path).task_list()
+    result = dict(found={}, not_found=[])
+    for t in task_list:
+        if t in tasks:
+            result.get('found')[tasks.get(t).name] = tasks.get(t)
+        else:
+            result.get('not_found').append(t)
+    return result
+
+
 TEMPLATES_DIRNAME = 'templates'
 
 def upload_template(filename, destination, context=None,

@@ -7,6 +7,8 @@ from oozappa.config import get_config, procure_common_functions
 _settings = get_config()
 
 procure_common_functions()
+import sys
+print(sys.path)
 from common_multiple_fabric_environment import _deploy_template_sample_a
 
 test_host = ('192.168.0.110',) #FIXME

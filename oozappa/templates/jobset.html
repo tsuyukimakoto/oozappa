@@ -1,23 +1,30 @@
 {% extends "base.html" %}
 
-{% block title %}Oozappa{% endblock %}
+{% block title %}Oozappa - Jobset : {{ jobset.title }}{% endblock %}
 
-{% block headline %}TOP{% endblock %}
+{% block headline %}Jobset {{ jobset.title }}{% endblock %}
 
 {% block body %}
 <div>
-
-  {% for jobset in jobset_list %}
-  <div><a href="{{ url_for('jobset', jobset_id=jobset.id) }}">{{ jobset.title }}</a>: {{ jobset.description }}</div>
-  {% endfor %}
-</div>
   <div>
-  <hr />
-  <h2>Run fabric in raw.</h2>
-    <form id="fabric_task" method='POST' action='#'>
-        <input name="fabric_path" id="fabric_path" value="sample/ops/staging"/>
-        <input name="tasks" id="tasks" value="" />
-        <input type="submit" value="run tasks">
+    {{ jobset.description }}
+  </div>
+  <div>
+    {% for job in jobset.jobs %}
+    <div>
+      <ul>
+        <li>environment: {{ job.environment.name }}</li>
+        <li>execute path: {{ job.environment.execute_path }}</li>
+        <li>task: {{ job.tasks }}</li>
+      </ul>
+    </div>
+    {% endfor %}
+  </div>
+  <div>
+    <form id="fabric_jobset" method='POST' action='#'>
+        <input type="hidden" name="jobset_id" id="jobset_id" value="{{ jobset.id }}"/>
+        <input type="submit" value="run jobset">
+  </div>
   <div>
     <div id="terminal">
     </div>
@@ -26,7 +33,7 @@
   <script type="text/javascript">
         $(document).ready(function(){
           var ws;
-          var connect_to = 'ws://' + document.domain + ':' + location.port + '/run_task'
+          var connect_to = 'ws://' + document.domain + ':' + location.port + '/run_jobset'
           var connect = function() {
             ws = new WebSocket(connect_to);
             ws.onmessage = function(e) {
@@ -44,8 +51,8 @@
             }
           };
           connect();
-          $('form#fabric_task').submit(function(event) {
-              ws.send(JSON.stringify({fabric_path: $('#fabric_path').val(), tasks: $('#tasks').val()}));
+          $('form#fabric_jobset').submit(function(event) {
+              ws.send(JSON.stringify({jobset_id: $('#jobset_id').val()}));
               return false;
           });
         });

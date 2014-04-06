@@ -51,7 +51,14 @@ class OozappaSetting(dict):
     self = _update(self, opt)
 
 def common_base_path():
-  return os.path.abspath(os.path.join(os.getcwd(), '..'))
+  if os.path.exists(
+    os.path.abspath(
+      os.path.join(os.getcwd(), 'fabfile'))) or os.path.exists(
+    os.path.abspath(
+      os.path.join(os.getcwd(), 'fabfile.py'))):
+    return os.path.abspath(os.path.join(os.getcwd(), '..'))
+  else:
+    return os.getcwd()
 
 def get_config():
   path_added = False

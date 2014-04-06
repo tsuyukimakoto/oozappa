@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Oozappa - Jobset{% endblock %}
+
+{% block headline %}Available JobSet{% endblock %}
+
+{% block body %}
+<div>
+  {% for jobset in jobset_list %}
+  <div><a href="{{ url_for('jobset', jobset_id=jobset.id) }}">{{ jobset.title }}</a>: {{ jobset.description }}</div>
+  {% endfor %}
+</div>
+<div>
+  <h2><a href="{{ url_for('create_jobset') }}">Create JobSet</a></h2>
+{% endblock %}
