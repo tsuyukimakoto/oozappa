@@ -1,17 +1,21 @@
 <html>
 <head>
   <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/gumby.css">
   <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
 </head>
 <body>
-  <div>
+  <div class="row">
     <ul>
-      <li><a href="{{ url_for('environments') }}">Environment</a></li>
-      <li><a href="{{ url_for('jobsets') }}">Jobsets</a></li>
+      <li class="dark label">navigation</li>
+      <li class="primary label"><a href="{{ url_for('environments') }}">Environment</a></li>
+      <li class="primary label"><a href="{{ url_for('jobsets') }}">Jobsets</a></li>
     </ul>
   </div>
-  <h1>{% block headline %}{% endblock %}</h1>
+  <div class="row">
+  <h2 class="lead">{% block headline %}{% endblock %}</h2>
 {% block body %}
 {% endblock %}
+  </div>
 </body>
 </html>

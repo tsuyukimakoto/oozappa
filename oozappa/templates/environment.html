@@ -2,47 +2,81 @@
 
 {% block title %}Oozappa - Environments ({{ environ.name }}){% endblock %}
 
-{% block headline %}Environments {{ environ.name }}{% endblock %}
+{% block headline %}Environment{% endblock %}
 
 {% block body %}
-<div>
-  <h2>Jobs</h2>
-  {% for job in environ.jobs %}
-  <div>{{ job.name }}: {{ job.tasks }}<br />{{ job.description }}</div>
-  {% endfor %}
+<div class="row">
+  <div class="xlarge btn default"><a href="#">{{ environ.name }}</a></div>
 </div>
 <div>
-  <h2>create Job</h2>
-{% if form.errors %}
-  <div>
-    <ul class="errors">
-        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
-            {% for error in field_errors %}
-                <li>{{ form[field_name].label }}: {{ error }}</li>
-            {% endfor %}
-        {% endfor %}
-    </ul>
-  </div>
-{% endif %}
-{% if error_message %}
-  <div>
-    <ul class="errors">
-      <li>{{ error_message }}</li>
-    </ul>
-  </div>
-{% endif %}
-  Possible tasks are.
-  {% for fabtask in environ.task_list() %}
-  <ul>
-    <li>{{ fabtask.name }}<br >({{ fabtask.__doc__ }})</li>
-  </ul>
+  <h3>Registered Jobs</h3>
+  <table class="striped rounded">
+  <thead><tr><th>Name</th><th>Task</th><th>Description</th></tr></thead>
+    <tbody>
+  {% for job in environ.jobs %}
+      <tr>
+        <td>{{ job.name }}</td>
+        <td>{{ job.tasks }}</td>
+        <td>{{ job.description }}</td>
+      </tr>
   {% endfor %}
+    </tbody>
+  </table>
+</div>
+<h3 class="lead">create Job</h3>
+<div class="row">
+  {% if form.errors %}
+    <div>
+      <ul class="errors">
+          {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+              {% for error in field_errors %}
+                  <li class="danger alert">{{ form[field_name].label }}: {{ error }}</li>
+              {% endfor %}
+          {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+  {% if error_message %}
+    <div>
+      <ul class="errors">
+        <li class="danger alert">{{ error_message }}</li>
+      </ul>
+    </div>
+  {% endif %}
+  <div class="two columns">
+    <h4 class="lead">Possible tasks are.</h4>
+  </div>
+  <div class="ten columns">
+    {% for fabtask in environ.task_list() %}
+    <dl>
+      <dt><a href="#" onclick="javascript:add_task('{{ fabtask.name }}');return false;">{{ fabtask.name }}</a></dt>
+      <dd>&nbsp;{{ fabtask.__doc__ }}</dd>
+    </dl>
+    {% endfor %}
+  </div>
+</div>
+<div>
   <form action="{{ url_for('environment', environment_id=environ.id) }}" method="POST">
-      {{ form.csrf_token }}
-      <input type="hidden" name="environment_id" value="{{ environ.id }}" />
-      {{ form.tasks() }}
-      <div>{{ form.name.label }}: {{ form.name(size=10) }}</div>
-      <div>{{ form.description.label }}: {{ form.description(size=50) }}</div>
-      <input type="submit" value="Go">
+    <fieldset>
+      <legend>Job information</legend>
+      <ul>
+        {{ form.csrf_token }}
+        <input type="hidden" name="environment_id" value="{{ environ.id }}" />
+        <li class="field">{{ form.name(size=10, class_='wide text input') }} : {{ form.name.label(class_='inline') }}</li>
+        <li class="field">{{ form.tasks(size=10, class_='wide text input') }} : {{ form.tasks.label(class_='inline') }}</li>
+        <li class="field">{{ form.description(size=50, class_='wide input textarea') }} : {{ form.description.label(class_='inline') }}</li>
+        <li class="field"><input type="submit" value="ADD"></li>
+      </ul>
+    </fieldset>
   </form>
+</div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    add_task = function(task) {
+      $("#tasks").val($.trim($("#tasks").val() + " " + task));
+    };
+  });
+</script>
 {% endblock %}
+

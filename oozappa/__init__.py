@@ -168,7 +168,7 @@ def jobset(jobset_id):
   #   session.add(jobset)
   #   session.commit()
   #   return redirect(url_for('jobset', jobset_id=jobset_id))
-  return render_template('jobset.html', form=form, jobset=jobset, job_list=session.query(Job).all())
+  return render_template('jobset.html', jobset=jobset, job_list=session.query(Job).all())
 
 #gunicorn -k flask_sockets.worker oozappa:app
 

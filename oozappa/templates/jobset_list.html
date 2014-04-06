@@ -6,10 +6,18 @@
 
 {% block body %}
 <div>
+  <table class="striped rounded">
+  <thead><tr><th>Jobset title</th><th>Description</th></tr></thead>
+    <tbody>
   {% for jobset in jobset_list %}
-  <div><a href="{{ url_for('jobset', jobset_id=jobset.id) }}">{{ jobset.title }}</a>: {{ jobset.description }}</div>
+      <tr>
+        <td><a href="{{ url_for('jobset', jobset_id=jobset.id) }}">{{ jobset.title }}</a></td>
+        <td>{{ jobset.description }}</td>
+      </tr>
   {% endfor %}
+    </tbody>
+  </table>
 </div>
 <div>
-  <h2><a href="{{ url_for('create_jobset') }}">Create JobSet</a></h2>
+  <div class="medium metro rounded btn primary"><a href="{{ url_for('create_jobset') }}">Create JobSet</a></div>
 {% endblock %}

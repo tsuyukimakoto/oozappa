@@ -2,18 +2,25 @@
 
 {% block title %}Oozappa{% endblock %}
 
-{% block headline %}TOP{% endblock %}
+{% block headline %}Jobsets{% endblock %}
 
 {% block body %}
 <div>
-
+  <table class="striped rounded">
+  <thead><tr><th>Jobset title</th><th>Description</th></tr></thead>
+    <tbody>
   {% for jobset in jobset_list %}
-  <div><a href="{{ url_for('jobset', jobset_id=jobset.id) }}">{{ jobset.title }}</a>: {{ jobset.description }}</div>
+      <tr>
+        <td><a href="{{ url_for('jobset', jobset_id=jobset.id) }}">{{ jobset.title }}</a></td>
+        <td>{{ jobset.description }}</td>
+      </tr>
   {% endfor %}
-</div>
+    </tbody>
+  </table>
+  </div>
   <div>
   <hr />
-  <h2>Run fabric in raw.</h2>
+  <h2 class="lead">Run fabric in raw.</h2>
     <form id="fabric_task" method='POST' action='#'>
         <input name="fabric_path" id="fabric_path" value="sample/ops/staging"/>
         <input name="tasks" id="tasks" value="" />

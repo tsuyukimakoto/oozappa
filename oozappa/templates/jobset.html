@@ -10,15 +10,18 @@
     {{ jobset.description }}
   </div>
   <div>
+  <table class="striped rounded">
+    <thead><tr><th>Environment</th><th>TASK</th><th>Description</th></tr></thead>
+    <tbody>
     {% for job in jobset.jobs %}
-    <div>
-      <ul>
-        <li>environment: {{ job.environment.name }}</li>
-        <li>execute path: {{ job.environment.execute_path }}</li>
-        <li>task: {{ job.tasks }}</li>
-      </ul>
-    </div>
+    <tr>
+        <td>{{ job.environment.name }}</td>
+        <td>{{ job.tasks }}</td>
+        <td>{{ job.description }}</td>
+    </tr>
     {% endfor %}
+    </tbody>
+    </table>
   </div>
   <div>
     <form id="fabric_jobset" method='POST' action='#'>
@@ -26,6 +29,7 @@
         <input type="submit" value="run jobset">
   </div>
   <div>
+    <h2 class="lead">Running log</h2>
     <div id="terminal">
     </div>
   </div>

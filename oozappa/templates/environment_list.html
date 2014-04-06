@@ -6,28 +6,41 @@
 
 {% block body %}
 <div>
+  <table class="striped rounded">
+  <thead><tr><th>Jobset title</th><th>Description</th></tr></thead>
+    <tbody>
   {% for en in environment_list %}
-  <div><a href="{{ url_for('environment', environment_id=en.id) }}">{{ en.name }}</a>: {{ en.execute_path }}</div>
+      <tr>
+        <td><a href="{{ url_for('environment', environment_id=en.id) }}">{{ en.name }}</a></td>
+        <td>{{ en.execute_path }}</td>
+      </tr>
   {% endfor %}
+    </tbody>
+  </table>
 </div>
 <div>
-  <h2>add Environment</h2>
+  <h2 class="lead">Add new Environment</h2>
 {% if form.errors %}
   <div>
     <ul class="errors">
         {% for field_name, field_errors in form.errors|dictsort if field_errors %}
             {% for error in field_errors %}
-                <li>{{ form[field_name].label }}: {{ error }}</li>
+                <li class="danger alert">{{ form[field_name].label }}: {{ error }}</li>
             {% endfor %}
         {% endfor %}
     </ul>
   </div>
 {% endif %}
   <form action="{{ url_for('add_environment') }}" method="POST">
-      {{ form.csrf_token }}
-      <div>{{ form.name.label }}: {{ form.name(size=10) }}</div>
-      <div>{{ form.sort_order.label }}: {{ form.sort_order(size=4) }}</div>
-      <div>{{ form.execute_path.label }}: {{ form.execute_path(size=20) }}</div>
-      <input type="submit" value="Go">
+    <fieldset>
+      <legend>environment information</legend>
+      <ul>
+        {{ form.csrf_token }}
+        <li class="field">{{ form.name(size=10, class_='wide text input') }} : {{ form.name.label(class_='inline') }}</li>
+        <li class="field">{{ form.sort_order(size=4, class_='wide text input') }} : {{ form.sort_order.label(class_='inline') }}</li>
+        <li class="field">{{ form.execute_path(size=20, class_='wide text input') }} : {{ form.execute_path.label(class_='inline') }}</li>
+        <li class="field"><input type="submit" value="ADD"></li>
+      </ul>
+    </fieldset>
   </form>
 {% endblock %}
