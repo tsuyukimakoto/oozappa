@@ -151,8 +151,10 @@ def create_jobset():
     jobset = Jobset()
     jobset.title = form.title.data
     jobset.description = form.description.data
-    jobset.jobs = session.query(Job).filter(Job.id.in_(form.job_id.data)).all()
     session.add(jobset)
+    for id in form.job_id.data:
+      j = session.query(Job).get(id)
+      jobset.jobs.append(j)
     session.commit()
     return redirect(url_for('jobsets'))
   return render_template('create_jobset.html', form=form, job_list=session.query(Job).all())

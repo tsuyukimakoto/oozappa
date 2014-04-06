@@ -32,10 +32,36 @@
       <ul>
         <li class="field">{{ form.title(size=10, class_='wide text input') }}: {{ form.title.label(class_='inline') }}</li>
         <li class="field">{{ form.description(size=50, class_='wide input textarea') }} : {{ form.description.label(class_='inline') }}</li>
-        <li class="field">{{ form.job_id(class_='wide select multiple') }} : {{ form.job_id.label(class_='inline') }}</li>
+        <li class="field">
+          <div>
+            {% for job in job_list %}
+            <dl>
+              <dt><a href="#" onclick="javascript:add_job('{{ job.id }}', '{{ job.environment.name}}', '{{ job.name }}');return false;">{{ job.name }}</a></dt>
+              <dd>&nbsp;{{ job.description }}</dd>
+            </dl>
+            {% endfor %}
+          </div>
+        <li class="field">{{ form.job_id.label(class_='inline') }}
+          <div style="display: none;">{{ form.job_id() }}</div>
+          <ul id="job_list"></ul>
+        </li>
         <li class="field"><input type="submit" value="Go"></li>
       </ul>
     </fieldset>
   </form>
 </div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    var selected_job = [];
+    add_job = function(job_id, environment_name, job_name) {
+      selected_job.push({id: job_id, environment_name: environment_name, job_name: job_name})
+      $("#job_list").empty();
+      $.each(selected_job, function(i, job) {
+        $("#job_list").append('<li class="primary alert">' + job.environment_name + ' - ' + job.job_name + '</li>');
+      });
+      $("#job_id").val($.map(selected_job, function(job, i) {return job.id}));
+    };
+  });
+</script>
 {% endblock %}
