@@ -18,6 +18,8 @@ def need_task(f):
     @wraps(f)
     def inner(self, *args, **kwargs):
         if not hasattr(self, 'task_dict'):
+            if 'fabfile' in sys.modules.keys():
+                del sys.modules['fabfile']
             self.task_dict = load_fabfile(os.path.join(self.execute_path, 'fabfile'))[1]
         return f(self, *args, **kwargs)
     return inner
@@ -84,9 +86,9 @@ from sqlalchemy.orm import sessionmaker
 DB = 'sqlite:////tmp/oozappa.sqlite'
 
 def get_db_session():
-  engine = create_engine(DB, echo=True) #
-  Session = sessionmaker(bind=engine)
-  return Session()
+    engine = create_engine(DB, echo=True) #
+    Session = sessionmaker(bind=engine)
+    return Session()
 
 from sqlalchemy import create_engine
 engine = create_engine(DB, echo=True) #

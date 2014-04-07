@@ -1,5 +1,6 @@
 # -*- coding:utf8 -*-
 import os
+import sys
 from fabric.api import env
 from fabric.main import load_fabfile
 from fabric.contrib.files import upload_template as fabric_upload_template
@@ -25,6 +26,8 @@ class FabricHelper(object):
         _path = path
         if not path.endswith('fabric'):
             _path = os.path.join(path, 'fabfile')
+        if 'fabfile' in sys.modules.keys():
+            del sys.modules['fabfile']
         _dict = load_fabfile(_path)[1]
         self.task_dict = dict((x.name, FabricTask(x)) for x in _dict.values())
         self.directory = os.path.split(path)[0]
