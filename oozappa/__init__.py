@@ -60,7 +60,24 @@ class exec_fabric:
 app = Flask('oozappa')
 from oozappa.config import get_config, procure_common_functions
 _settings = get_config()
-app.config['SECRET_KEY'] = _settings.FLASK_SECRET_KEY
+try:
+  app.config['SECRET_KEY'] = _settings.FLASK_SECRET_KEY
+except AttributeError:
+  should_create = raw_input('Create common environment here? [y/N]')
+  if should_create == 'y':
+    import shutil
+    from uuid import uuid4
+    current = os.getcwd()
+    shutil.copytree(os.path.join(os.path.dirname(__file__), '_structure', 'common'), 'common')
+    with open('common/vars.py') as f:
+      data = f.read()
+    with open('common/vars.py', 'w') as f:
+      f.write(data.format(uuid4().hex))
+    print('create common directory. db file path and flask secret key are in common/vars.py.')
+    sys.exit(0)
+  print("couldn't find FLASK_SECRET_KEY in your ENVIRONMENT/vars.py")
+  sys.exit(1)
+
 init_db()
 sockets = Sockets(app)
 
@@ -174,6 +191,26 @@ def jobset(jobset_id):
   #   session.commit()
   #   return redirect(url_for('jobset', jobset_id=jobset_id))
   return render_template('jobset.html', jobset=jobset, job_list=session.query(Job).all())
+
+if __name__ == '__main__':
+  pass
+  # should_create = raw_input('Create common environment here? [y/N]')
+  # if should_create == 'y':
+  #   if os.path.exists('common'):
+  #     print('You have common directory already here. Nothing to do.')
+  #     sys.exit(1)
+  #   import shutil
+  #   from uuid import uuid4
+  #   current = os.getcwd()
+  #   shutil.copytree(os.path.join(os.path.dirname(__file__), '_structure', 'common'), 'common')
+  #   with open('common/vars.py') as f:
+  #     data = f.read()
+  #   with open('common/vars.py', 'w') as f:
+  #     f.write(data.format(uuid4().hex))
+  #   print('create common directory. db file path and flask secret key are in common/vars.py.')
+  #   sys.exit(0)
+  # print("couldn't find FLASK_SECRET_KEY in your ENVIRONMENT/vars.py")
+  # sys.exit(0)
 
 #gunicorn -k flask_sockets.worker oozappa:app
 

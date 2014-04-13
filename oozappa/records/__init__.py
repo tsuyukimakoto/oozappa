@@ -86,16 +86,15 @@ from sqlalchemy.orm import sessionmaker
 
 from oozappa.config import get_config, procure_common_functions
 _settings = get_config()
-DB = _settings.OOZAPPA_DB
 
 def get_db_session():
-    engine = create_engine(DB, echo=False) #
+    engine = create_engine(_settings.OOZAPPA_DB, echo=False) #
     Session = sessionmaker(bind=engine)
     return Session()
 
 def init():
     from sqlalchemy import create_engine
-    engine = create_engine(DB, echo=False) #
+    engine = create_engine(_settings.OOZAPPA_DB, echo=False) #
 
     from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
     metadata = Base.metadata #this knows table mapping class.
