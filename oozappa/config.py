@@ -31,7 +31,6 @@ class OozappaSetting(dict):
   '''
   def __init__(self, *args, **kwargs) :
     for d in args:
-      print(d)
       if isinstance(d, collections.Mapping):
         self.update(d)
     for key, value in kwargs.items():
@@ -63,7 +62,7 @@ def common_base_path():
 def get_config():
   path_added = False
   _common_base_path = common_base_path()
-  logger.debug(_common_base_path)
+  logger.debug('COMMON_BASE_PATH: {0}'.format(_common_base_path))
   try:
     if not _common_base_path in sys.path:
       sys.path.insert(0, _common_base_path)

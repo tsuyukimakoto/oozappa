@@ -5,6 +5,7 @@ from sqlalchemy import Table, Column, Integer, String, DateTime, Boolean, Foreig
 from sqlalchemy.orm import relationship, backref
 
 import os
+import sys
 
 Base = declarative_base()
 
@@ -83,52 +84,20 @@ class ExecuteLog(Base):
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-DB = 'sqlite:////tmp/oozappa.sqlite'
+from oozappa.config import get_config, procure_common_functions
+_settings = get_config()
+DB = _settings.OOZAPPA_DB
 
 def get_db_session():
-    engine = create_engine(DB, echo=True) #
+    engine = create_engine(DB, echo=False) #
     Session = sessionmaker(bind=engine)
     return Session()
 
-from sqlalchemy import create_engine
-engine = create_engine(DB, echo=True) #
+def init():
+    from sqlalchemy import create_engine
+    engine = create_engine(DB, echo=False) #
 
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
-metadata = Base.metadata #this knows table mapping class.
-metadata.create_all(engine) #create table if not exists.
+    from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
+    metadata = Base.metadata #this knows table mapping class.
+    metadata.create_all(engine) #create table if not exists.
 
-# from sqlalchemy.orm import sessionmaker
-# Session = sessionmaker(bind=engine)
-# session = Session()
-
-# stg_environment = Environment()
-# stg_environment.name = 'Staging'
-# stg_environment.sort_order = 2
-# stg_environment.execute_path = 'sample/ops/staging'
-# prd_environment = Environment()
-# prd_environment.name = 'Production'
-# prd_environment.sort_order = 1
-# prd_environment.execute_path = 'sample/ops/production'
-# session.add(stg_environment)
-# session.add(prd_environment)
-
-# job1 = Job(name='job1', description=u'とあるジョブ1', tasks='ls ps')
-# job1.environment = stg_environment
-
-# job2 = Job(name='job2', description=u'とあるジョブ2', tasks='sleep')
-# job2.environment = stg_environment
-
-# job3 = Job(name='job3', description=u'とあるジョブ3', tasks='ls')
-# job3.environment = prd_environment
-
-# jobset = Jobset(title=u'複数ジョブ', description=u'あれをやってこれをやる')
-# jobset.jobs.append(job1)
-# jobset.jobs.append(job2)
-# jobset.jobs.append(job3)
-
-# session.commit()
-
-# how can i pass env through different environment ?
-# Set value to env that results execute task. how?
-
-# JobSet organize Job, job is multiple fabric task. JobSet contains Job consists an environment and tasks.

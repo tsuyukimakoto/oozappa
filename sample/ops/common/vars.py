@@ -3,6 +3,8 @@ from oozappa.config import OozappaSetting
 _ = OozappaSetting
 
 settings = _(
+	OOZAPPA_DB = 'sqlite:////tmp/oozappa.sqlite',
+	FLASK_SECRET_KEY = 'important key',
     email = 'mtsuyuki at gmail.com',
     instance_type = 'c3.large',
     sample_template_vars = _(

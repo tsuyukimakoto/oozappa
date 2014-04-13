@@ -91,7 +91,7 @@ def only_once(f):
     try:
       if not env.get(flag_format.format(f.__name__)):
         return f(*args, **kwargs)
-      print('[ONLY ONCE] pass function [{0}]'.format(f.__name__))
+      logger.info('[ONLY ONCE] pass function [{0}]'.format(f.__name__))
     finally:
       env[flag_format.format(f.__name__)] = True
   return _f

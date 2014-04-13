@@ -6,14 +6,19 @@ import time
 import json
 
 
-from oozappa.records import Environment, Job, Jobset, ExecuteLog, get_db_session
+from oozappa.records import Environment, Job, Jobset, ExecuteLog, get_db_session, init as init_db
 from oozappa.forms import EnvironmentForm, JobForm, JobSetForm
 from oozappa.fabrictools import get_tasks
 
 import logging
 
+
+from flask import Flask, render_template, url_for, redirect, request
+from flask_sockets import Sockets
+
 logging.basicConfig(level=logging.WARN, format='%(asctime)s %(levelname)s %(message)s')
 logger = logging.getLogger('oozappa')
+logger.setLevel(logging.DEBUG)
 
 class exec_fabric:
     def __init__(self, wsckt, path):
@@ -52,13 +57,11 @@ class exec_fabric:
       self.wsckt.send('takes {0:.2f} sec'.format(time.time() - start_time))
       return p.wait()
 
-logger.setLevel(logging.DEBUG)
-
-from flask import Flask, render_template, url_for, redirect, request
-from flask_sockets import Sockets
-
 app = Flask('oozappa')
-app.config['SECRET_KEY'] = 'ultra oozappa'
+from oozappa.config import get_config, procure_common_functions
+_settings = get_config()
+app.config['SECRET_KEY'] = _settings.FLASK_SECRET_KEY
+init_db()
 sockets = Sockets(app)
 
 @sockets.route('/run_task')
