@@ -183,38 +183,9 @@ def create_jobset():
 def jobset(jobset_id):
   session = get_db_session()
   jobset = session.query(Jobset).get(jobset_id)
-  # form = JobSetForm(request.form, jobset)
-  # form.job_id.choices = Job.choices()
-  # if form.validate_on_submit():
-  #   form.populate_obj(jobset)
-  #   session.add(jobset)
-  #   session.commit()
-  #   return redirect(url_for('jobset', jobset_id=jobset_id))
   return render_template('jobset.html', jobset=jobset, job_list=session.query(Job).all())
 
 if __name__ == '__main__':
   pass
-  # should_create = raw_input('Create common environment here? [y/N]')
-  # if should_create == 'y':
-  #   if os.path.exists('common'):
-  #     print('You have common directory already here. Nothing to do.')
-  #     sys.exit(1)
-  #   import shutil
-  #   from uuid import uuid4
-  #   current = os.getcwd()
-  #   shutil.copytree(os.path.join(os.path.dirname(__file__), '_structure', 'common'), 'common')
-  #   with open('common/vars.py') as f:
-  #     data = f.read()
-  #   with open('common/vars.py', 'w') as f:
-  #     f.write(data.format(uuid4().hex))
-  #   print('create common directory. db file path and flask secret key are in common/vars.py.')
-  #   sys.exit(0)
-  # print("couldn't find FLASK_SECRET_KEY in your ENVIRONMENT/vars.py")
-  # sys.exit(0)
 
 #gunicorn -k flask_sockets.worker oozappa:app
-
-# how can i pass env through different environment ?
-# Set value to env that results execute task. how?
-
-# JobSet organize Job, job is multiple fabric task. JobSet contains Job consists an environment and tasks.
