@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship, backref
 
 import os
 import sys
+from datetime import datetime
 
 Base = declarative_base()
 
@@ -74,12 +75,16 @@ class Job(Base):
 class ExecuteLog(Base):
     __tablename__ = 'execute_log'
     id = Column(Integer, primary_key=True)
-    job_id = Column(Integer, ForeignKey('job.id'))
     success = Column(Boolean)
     started = Column(DateTime)
     finished = Column(DateTime)
+    logfile = Column(String)
     jobset_id = Column(Integer, ForeignKey('jobset.id'))
     jobset = relationship("Jobset", backref=backref('execute_logs', order_by=id.desc()))
+
+    def __init__(self):
+        self.success = False
+        self.started = datetime.now()
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

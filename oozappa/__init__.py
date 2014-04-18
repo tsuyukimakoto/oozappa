@@ -11,7 +11,8 @@ from oozappa.forms import EnvironmentForm, JobForm, JobSetForm
 from oozappa.fabrictools import get_tasks
 
 import logging
-
+from uuid import uuid4
+from datetime import datetime
 
 from flask import Flask, render_template, url_for, redirect, request
 from flask_sockets import Sockets
@@ -42,7 +43,7 @@ class exec_fabric:
         if self.path_appended:
             sys.path.remove(self.exec_path)
 
-    def doit(self, fabric_commands = []):
+    def doit(self, fabric_commands = [], logfile=None):
       start_time = time.time()
       logger.debug('doit from running websocket: fab {0}'.format(' '.join(fabric_commands)))
       p = subprocess.Popen(["fab"] + fabric_commands,
@@ -53,6 +54,8 @@ class exec_fabric:
         if not line:
           break
         self.wsckt.send(line)
+        if logfile:
+          logfile.write(line)
         # print(line.strip())
       self.wsckt.send('takes {0:.2f} sec'.format(time.time() - start_time))
       return p.wait()
@@ -66,7 +69,6 @@ except AttributeError:
   should_create = raw_input('Create common environment here? [y/N]')
   if should_create == 'y':
     import shutil
-    from uuid import uuid4
     current = os.getcwd()
     shutil.copytree(os.path.join(os.path.dirname(__file__), '_structure', 'common'), 'common')
     with open('common/vars.py') as f:
@@ -103,9 +105,24 @@ def run_jobset(ws):
   jobset_id = data.get('jobset_id')
   session = get_db_session()
   jobset = session.query(Jobset).get(jobset_id)
+  executelog = ExecuteLog()
+  executelog.jobset = jobset
+  session.add(executelog)
+  session.commit()
+  logfile = None
+  if _settings.OOZAPPA_LOG:
+    executelog.logfile = os.path.join(_settings.OOZAPPA_LOG_BASEDIR,
+      '{0}.log'.format(uuid4().hex))
+    logfile = open(executelog.logfile, 'w')
   for job in jobset.jobs:
     with exec_fabric(ws, job.environment.execute_path) as executor:
-      executor.doit(job.tasks.split(' '))
+      executor.doit(job.tasks.split(' '), logfile)
+  else:
+    executelog.success = True
+    executelog.finished = datetime.now()
+    session.commit()
+  if logfile:
+    logfile.close()
 
 @app.route('/')
 def index():
