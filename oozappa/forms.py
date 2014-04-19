@@ -2,7 +2,7 @@
 import os
 from flask_wtf import Form
 from wtforms.widgets import TextArea, HiddenInput
-from wtforms import TextField, IntegerField, SelectMultipleField
+from wtforms import TextField, IntegerField, SelectMultipleField, FieldList
 from wtforms.validators import DataRequired, NumberRange, ValidationError
 
 class EnvironmentForm(Form):

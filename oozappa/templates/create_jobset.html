@@ -42,7 +42,6 @@
             {% endfor %}
           </div>
         <li class="field">{{ form.job_id.label(class_='inline') }}
-          <div style="display: none;">{{ form.job_id() }}</div>
           <ul id="job_list"></ul>
         </li>
         <li class="field"><input type="submit" value="Go"></li>
@@ -58,9 +57,9 @@
       selected_job.push({id: job_id, environment_name: environment_name, job_name: job_name})
       $("#job_list").empty();
       $.each(selected_job, function(i, job) {
-        $("#job_list").append('<li class="primary alert">' + job.environment_name + ' - ' + job.job_name + '</li>');
+        $("#job_list").append('<li class="primary alert">' + job.environment_name + ' - ' + job.job_name + '</li><input type="checkbox" name="job_id" value="' + job.id + '" checked />');
       });
-      $("#job_id").val($.map(selected_job, function(job, i) {return job.id}));
+      // $("#job_id").val($.map(selected_job, function(job, i) {return job.id}));
     };
   });
 </script>

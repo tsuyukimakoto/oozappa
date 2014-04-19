@@ -46,29 +46,15 @@ class Environment(Base):
        return "<Environment(name='%s', sort_order='%d', execute_path='%s')>" % (
                             self.name, self.sort_order, self.execute_path)
 
-jobset_job_table = Table('jobset_job', Base.metadata,
-    Column('jobset_id', Integer, ForeignKey('jobset.id')),
-    Column('job_id', Integer, ForeignKey('job.id'))
-)
-
-# class jobset_job_table(Base):
-#     __tablename__ = 'jobset_job'
-#     id = Column(Integer, primary_key=True)
-#     jobset_id = Column(Integer, ForeignKey('jobset.id'))
-#     job_id = Column(Integer, ForeignKey('job.id'))
-
-#     foreign_keys = [jobset_id, job_id]
-
-#     jobset = relationship("Jobset", foreign_keys=[jobset_id])
-#     job = relationship("Job", foreign_keys=[job_id])
-
 class Jobset(Base):
     __tablename__ = 'jobset'
     id = Column(Integer, primary_key=True)
     title = Column(String)
     description = Column(String)
-    jobs = relationship("Job",
-                    secondary=jobset_job_table)
+
+    @property
+    def jobs(self):
+        return [j.job for j in self.jobsetlist]
 
 class Job(Base):
     __tablename__ = 'job'
@@ -82,6 +68,17 @@ class Job(Base):
     @staticmethod
     def choices():
         return [(x.id, x.name) for x in get_db_session().query(Job).all()]
+
+class JobsetJobList(Base):
+    __tablename__ = 'jobset_job'
+    id = Column(Integer, primary_key=True)
+    jobset_id = Column(Integer, ForeignKey('jobset.id'))
+    job_id = Column(Integer, ForeignKey('job.id'))
+
+    jobset = relationship("Jobset", backref=backref('jobsetlist', order_by=id))
+    job    = relationship("Job", backref=backref('jobsetlist', order_by=id))
+
+
 
 class ExecuteLog(Base):
     __tablename__ = 'execute_log'

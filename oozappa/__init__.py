@@ -6,7 +6,7 @@ import time
 import json
 
 
-from oozappa.records import Environment, Job, Jobset, ExecuteLog, get_db_session, init as init_db
+from oozappa.records import Environment, Job, Jobset, JobsetJobList, ExecuteLog, get_db_session, init as init_db
 from oozappa.forms import EnvironmentForm, JobForm, JobSetForm
 from oozappa.fabrictools import get_tasks
 
@@ -196,7 +196,10 @@ def create_jobset():
     session.add(jobset)
     for id in form.job_id.data:
       j = session.query(Job).get(id)
-      jobset.jobs.append(j)
+      jsl = JobsetJobList()
+      jsl.jobset = jobset
+      jsl.job = j
+      session.add(jsl)
     session.commit()
     return redirect(url_for('jobsets'))
   return render_template('create_jobset.html', form=form, job_list=session.query(Job).all())
