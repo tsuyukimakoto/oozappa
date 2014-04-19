@@ -51,6 +51,17 @@ jobset_job_table = Table('jobset_job', Base.metadata,
     Column('job_id', Integer, ForeignKey('job.id'))
 )
 
+# class jobset_job_table(Base):
+#     __tablename__ = 'jobset_job'
+#     id = Column(Integer, primary_key=True)
+#     jobset_id = Column(Integer, ForeignKey('jobset.id'))
+#     job_id = Column(Integer, ForeignKey('job.id'))
+
+#     foreign_keys = [jobset_id, job_id]
+
+#     jobset = relationship("Jobset", foreign_keys=[jobset_id])
+#     job = relationship("Job", foreign_keys=[job_id])
+
 class Jobset(Base):
     __tablename__ = 'jobset'
     id = Column(Integer, primary_key=True)
@@ -85,6 +96,11 @@ class ExecuteLog(Base):
     def __init__(self):
         self.success = False
         self.started = datetime.now()
+
+    def execute_time(self):
+        if self.started and self.finished:
+            return '{0:08.3f}'.format((self.finished - self.started).total_seconds())
+        return ''
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

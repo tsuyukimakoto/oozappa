@@ -29,6 +29,30 @@
     <div id="terminal">
     </div>
   </div>
+  {% if executelog_list %}
+  <div>
+    <h3 class="lead">Execute Logs</h3>
+    <table class="striped rounded">
+    <thead><tr><th>Jobset</th><th>Started</th><th>Finished</th><th>Time in sec.</th><th>Result</th></tr></thead>
+      <tbody>
+    {% for el in executelog_list %}
+        <tr>
+          <td>{{ el.jobset.title }}</td>
+          <td>{{ el.started|datetimefmt }}</td>
+          <td>{{ el.finished|datetimefmt }}</td>
+          <td>{{ el.execute_time() }}</td>
+          <td>
+            <a href="{{ url_for('get_execute_log', id=el.id) }}">
+              {% if el.success %}<li class="success alert">Success</li>
+              {% else %}<li class="danger alert">Fail</li>{% endif %}
+            </a>
+          </td>
+        </tr>
+    {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   <script type="text/javascript">
         $(document).ready(function(){

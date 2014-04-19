@@ -14,7 +14,7 @@ import logging
 from uuid import uuid4
 from datetime import datetime
 
-from flask import Flask, render_template, url_for, redirect, request
+from flask import Flask, render_template, url_for, redirect, request, Response, abort
 from flask_sockets import Sockets
 
 logging.basicConfig(level=logging.WARN, format='%(asctime)s %(levelname)s %(message)s')
@@ -83,6 +83,10 @@ except AttributeError:
 init_db()
 sockets = Sockets(app)
 
+@app.template_filter('datetimefmt')
+def _datetimefmt(d):
+  return d and d.strftime("%Y/%m/%d %H:%M:%S") or ''
+
 @sockets.route('/run_task')
 def run_task(ws):
   message = ws.receive()
@@ -128,7 +132,8 @@ def run_jobset(ws):
 def index():
   session = get_db_session()
   jobset_list = session.query(Jobset).all()
-  return render_template('index.html', jobset_list=jobset_list)
+  executelog_list = session.query(ExecuteLog).order_by(ExecuteLog.id.desc()).all()[:20]
+  return render_template('index.html', jobset_list=jobset_list, executelog_list=executelog_list)
 
 @app.route('/environments')
 def environments():
@@ -200,7 +205,18 @@ def create_jobset():
 def jobset(jobset_id):
   session = get_db_session()
   jobset = session.query(Jobset).get(jobset_id)
-  return render_template('jobset.html', jobset=jobset, job_list=session.query(Job).all())
+  return render_template('jobset.html', jobset=jobset, job_list=session.query(Job).all(), executelog_list=jobset.execute_logs[:10])
+
+@app.route('/get_execute_log/<id>/', methods=['GET'])
+def get_execute_log(id):
+  session = get_db_session()
+  executelog = session.query(ExecuteLog).get(id)
+  if not executelog.logfile:
+    abort(404)
+  with open(executelog.logfile, 'r') as f:
+    logs = f.read()
+  return Response(logs, mimetype='text/plain')  
+
 
 if __name__ == '__main__':
   pass
