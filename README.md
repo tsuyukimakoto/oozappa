@@ -49,7 +49,7 @@ see sample oozappa project(sample/ops).
     │   │   ├── common_multiple_fabric_environment.py
     │   ├── templates
     │   │   └── sample_a.txt
-    │   ├── vars.py
+    │   └── vars.py
     ├── construction
     │   ├── fabfile
     │   │   ├── __init__.py
@@ -112,7 +112,7 @@ Change directory to outside environment directory.
     common		production	staging
     $ gunicorn -k flask_sockets.worker oozappa:app
 
-_Running oozappa:app creates __/tmp/oozappa.sqlite__ ._
+Running oozappa:app creates __/tmp/oozappa.sqlite__ .
 
 Open your web browser and browse http://localhost:8000/ .
 
