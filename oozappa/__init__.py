@@ -90,6 +90,8 @@ def _datetimefmt(d):
 @sockets.route('/run_task')
 def run_task(ws):
   message = ws.receive()
+  if not message:
+    return
   data = json.loads(message)
   if not data.get('fabric_path', None):
     ws.send('need fabric_path')
@@ -105,6 +107,8 @@ def run_task(ws):
 @sockets.route('/run_jobset')
 def run_jobset(ws):
   message = ws.receive()
+  if not message:
+    return
   data = json.loads(message)
   jobset_id = data.get('jobset_id')
   session = get_db_session()
@@ -125,6 +129,14 @@ def run_jobset(ws):
     executelog.success = True
     executelog.finished = datetime.now()
     session.commit()
+    ws.send('\n&nbsp;\n&nbsp;\n')
+    ws.send('=' * 35)
+    ws.send('\n')
+    ws.send(u'[Oozappa:FINISHED] Jobset: {0} in {1} seconds.'.format(jobset.title,
+      executelog.execute_time()).encode('utf8'))
+    ws.send('\n')
+    ws.send('=' * 35)
+    ws.send('\n&nbsp;\n&nbsp;\n')
   if logfile:
     logfile.close()
 

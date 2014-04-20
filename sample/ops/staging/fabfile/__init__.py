@@ -45,3 +45,28 @@ def printsetting():
 def deploy_template_sample_a():
     _deploy_template_sample_a(_settings.sample_template_vars.sample_a)
 
+@task
+def launch_instance_from_app_a_image():
+  u'''eg. launch instance from app a image.'''
+  print('launch_instance_from_app_a_image')
+
+@task
+def set_env_latest_app_a():
+  u'''eg. search latest app type a instance and set fabric env.'''
+  print('set_env_latest_app_a')
+
+@task
+def set_env_latest_app_b():
+  u'''eg. search latest app type b instance and set fabric env.'''
+  print('set_env_latest_app_b')
+
+@task
+def launch_instance_from_app_b_image():
+  u'''eg. launch instance from app b image.'''
+  print('launch_instance_from_app_b_image')
+
+@task
+def production_specific_setting():
+  u'''eg. production specific setting'''
+  print('production_specific_setting')
+

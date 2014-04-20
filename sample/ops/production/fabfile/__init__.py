@@ -13,28 +13,53 @@ test_host = ('192.168.0.10',) #FIXME
 
 @task
 def ls():
-    u'''run ls command on local machine.'''
-    local('ls -la')
+  u'''run ls command on local machine.'''
+  local('ls -la')
 
 @task
 def ps():
-    u'''run ls command on local machine.'''
-    local('ps ax')
+  u'''run ls command on local machine.'''
+  local('ps ax')
 
 @task
 def sleep():
-    u'''sleep 5 second.'''
-    print('stop 5 sec...')
-    time.sleep(5)
-    print('5 sec... passed')
+  u'''sleep 5 second.'''
+  print('stop 5 sec...')
+  time.sleep(5)
+  print('5 sec... passed')
 
 @task
 def printsetting():
-    u'''print setting from staging.vars and common.vars'''
-    print(_settings)
+  u'''print setting from staging.vars and common.vars'''
+  print(_settings)
 
 @task
 @hosts(test_host)
 def deploy_template_sample_a():
-    _deploy_template_sample_a(_settings.sample_template_vars.sample_a)
+  _deploy_template_sample_a(_settings.sample_template_vars.sample_a)
+
+@task
+def launch_instance_from_app_a_image():
+  u'''eg. launch instance from app a image.'''
+  print('launch_instance_from_app_a_image')
+
+@task
+def launch_instance_from_app_b_image():
+  u'''eg. launch instance from app b image.'''
+  print('launch_instance_from_app_b_image')
+
+@task
+def set_env_latest_app_a():
+  u'''eg. search latest app type a instance and set fabric env.'''
+  print('set_env_latest_app_a')
+
+@task
+def set_env_latest_app_b():
+  u'''eg. search latest app type b instance and set fabric env.'''
+  print('set_env_latest_app_b')
+
+@task
+def production_specific_setting():
+  u'''eg. production specific setting'''
+  print('production_specific_setting')
 
