@@ -36,7 +36,7 @@
           <div>
             {% for job in job_list %}
             <dl>
-              <dt><a href="#" onclick="javascript:add_job('{{ job.id }}', '{{ job.environment.name}}', '{{ job.name }}');return false;">{{ job.name }}</a></dt>
+              <dt><a href="#" onclick="javascript:add_job('{{ job.id }}', '{{ job.environment.name}}', '{{ job.name }}');return false;">{{ job.name }} ({{ job.environment.name}})</a></dt>
               <dd>&nbsp;{{ job.description }}</dd>
             </dl>
             {% endfor %}

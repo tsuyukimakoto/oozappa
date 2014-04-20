@@ -13,6 +13,29 @@ install
     $ ln -s `pwd`/oozappa VIRTUALENV/lib/Python2.7/site-packages/oozappa
     $ pip install -r requirements.txt
 
+oozappa data models.
+=======
+
+## Environment
+
+Environment is a category that has fibfile directory and vars.py .
+
+A problem about fabric with large project is, too many fabric tasks and complicated task orders.
+
+So you should separate fabfile into domain category. That is Environment.
+
+## Job
+
+Job is like a normal fabric execution command.
+
+ _eg. fab task1 task2 is a job._
+
+## Jobset
+
+Jobset is oozappa operation unit.
+
+Jobset can contain multiple job, even extend over environments. 
+
 oozappa fabric structures.
 =======
 
@@ -23,22 +46,34 @@ see sample oozappa project(sample/ops).
     │   ├── __init__.py
     │   ├── files
     │   ├── functions
-    │   │   └── common_multiple_fabric_environment.py
+    │   │   ├── common_multiple_fabric_environment.py
     │   ├── templates
     │   │   └── sample_a.txt
-    │   └── vars.py
+    │   ├── vars.py
+    ├── construction
+    │   ├── fabfile
+    │   │   ├── __init__.py
+    │   ├── templates
+    │   ├── vars.py
+    │   └── vars.pyc
+    ├── deployment
+    │   ├── fabfile
+    │   │   ├── __init__.py
+    │   ├── templates
+    │   ├── vars.py
     ├── production
     │   ├── fabfile
-    │   │   └── __init__.py
-    │   └── vars.py
+    │   │   ├── __init__.py
+    │   ├── templates
+    │   ├── vars.py
     └── staging
         ├── fabfile
-        │   └── __init__.py
+        │   ├── __init__.py
         ├── templates
         │   └── sample_a.txt
-        └── vars.py
+        ├── vars.py
 
-__common__ is reserved directory. __production__ and __staging__ are environment directory. These two names are just example.
+__common__ is reserved directory. __construction__ and others are environment directory. These names are just example.
 
 ## vars
 
@@ -71,8 +106,6 @@ Call __oozappa.config.procure_common_functions__() and add commons/functions dir
 run fabric task via web browser.
 =======
 
-*) operation will change near future.
-
 Change directory to outside environment directory.
 
     $ cd ..
@@ -80,22 +113,86 @@ Change directory to outside environment directory.
     common		production	staging
     $ gunicorn -k flask_sockets.worker oozappa:app
 
-It's ok to move outside more.
+_Running oozappa:app creates __/tmp/oozappa.sqlite__ ._
 
-Open Safari and browse http://localhost:8000/ .
+Open your web browser and browse http://localhost:8000/ .
 
-Modify left hand side input to __staging__ and click _run_tasks_. You can see what tasks exists.
+## rapid execution
+
+Modify _Run fabric in raw_'s left hand side input to __staging__ and click _run_tasks_. You can see what tasks exists.
 
 Then input __ls ps__ to right hand side input and click _run_tasks_ .
 
 That's it.
 
-comming features
+## better way using sample
+
+### register environment to db.
+
+* Click environment button via top menu.
+* Add new Environment
+	* name: constructiton 
+	* sort_order: 1
+	* execute_path: constructiton
+* Add 3 more.
+
+![environments](https://dl.dropboxusercontent.com/u/382460/oozappa/readme/environments.png "environments")
+
+### create job in each environments.
+
+* Click environment you created
+* Create new Job.
+	* Click task from Possible tasks in order
+
+![job](https://dl.dropboxusercontent.com/u/382460/oozappa/readme/create_job.png "job")
+
+### create jobset
+
+* Click jobset button via top menu.
+* Click jobs you'd like to execute once.
+
+![jobset](https://dl.dropboxusercontent.com/u/382460/oozappa/readme/create_jobset.png "jobset")
+
+### run jobset
+
+* Click navigation button or jobset button via top menu.
+* Click jobset you'd like to execute.
+* Click _run jobset_ button.
+* Running log displays __Running log__.
+* Reload page when jobset done. or Go to top(via navigation button)
+	* You see Execute Logs and show raw log when you click success (or fail).
+
+![runnig jobset](https://dl.dropboxusercontent.com/u/382460/oozappa/readme/jobset.png "running jobset")
+
+How to create your own
 =======
 
-Oozappa should manage environment and job, that is chained tasks, and execute log using database.
+## Create common directory
 
-So, comming features are
+Change directory your own oozappa.
 
-* Admin interface
-* Operation interface
+    $ mkdir devops
+    $ cd devops
+
+Then run oozappa.
+
+    $ python -m oozappa
+    Create common environment here? [y/N]y
+    create common directory. db file path and flask secret key are in common/vars.py.
+
+## change default settings
+
+Open `common/vars.py` and change settings using temp directory. Or results disapear when you reboot your machine or server.
+
+* __OOZAPPA_DB__ : sqlite's data store path.
+* __OOZAPPA_LOG_BASEDIR__ : Jobset execute log store directory path.
+
+## create environment
+
+Run oozappa.create_environment with environment name(s).
+
+	$ python -m oozappa.create_environment construction deployment
+	2014-04-20 16:43:26,543 INFO create environment : construction
+	2014-04-20 16:43:26,544 INFO create environment : deployment
+
+Then you can write fabfile normally and execute via oozappa.

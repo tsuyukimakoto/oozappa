@@ -1,5 +1,5 @@
 # -*- coding:utf8 -*-
-from fabric.api import task, local, run, sudo, env
+from fabric.api import task, local, run, sudo, env, hosts
 
 from oozappa.config import get_config, procure_common_functions
 _settings = get_config()
@@ -34,14 +34,3 @@ def make_some_language_or_middleware():
 def create_image_from_initial_instance():
   u'''eg. search initial instance and create image.'''
   print('create_image_from_initial_instance')
-
-@task
-def ls():
-  u'''sample task'''
-  local('ls -lrta')
-
-@task
-def ps():
-  u'''sample task'''
-  local('ps aux')
-
