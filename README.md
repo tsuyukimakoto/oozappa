@@ -54,24 +54,23 @@ see sample oozappa project(sample/ops).
     │   ├── fabfile
     │   │   ├── __init__.py
     │   ├── templates
-    │   ├── vars.py
-    │   └── vars.pyc
+    │   └── vars.py
     ├── deployment
     │   ├── fabfile
     │   │   ├── __init__.py
     │   ├── templates
-    │   ├── vars.py
+    │   └── vars.py
     ├── production
     │   ├── fabfile
     │   │   ├── __init__.py
     │   ├── templates
-    │   ├── vars.py
+    │   └── vars.py
     └── staging
         ├── fabfile
         │   ├── __init__.py
         ├── templates
         │   └── sample_a.txt
-        ├── vars.py
+        └── vars.py
 
 __common__ is reserved directory. __construction__ and others are environment directory. These names are just example.
 
