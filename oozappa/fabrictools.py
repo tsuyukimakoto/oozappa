@@ -28,14 +28,25 @@ class FabricHelper(object):
             _path = os.path.join(path, 'fabfile')
         if 'fabfile' in sys.modules.keys():
             del sys.modules['fabfile']
-        _dict = load_fabfile(_path)[1]
+        self.doc, _dict = load_fabfile(_path)[:2]
         self.task_dict = dict((x.name, FabricTask(x)) for x in _dict.values())
         self.directory = os.path.split(path)[0]
 
     def task_list(self):
         return self.task_dict
+
     def task(self, name):
         return self.task_dict[name]
+
+    def get_tasks(self, task_list):
+        tasks = self.task_list()
+        result = dict(found={}, not_found=[])
+        for t in task_list:
+            if t in tasks:
+                result.get('found')[tasks.get(t).name] = tasks.get(t)
+            else:
+                result.get('not_found').append(t)
+        return result
 
 def print_task_list(path):
     tasks = load_fabfile(path)

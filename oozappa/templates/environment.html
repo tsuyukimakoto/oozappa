@@ -6,7 +6,8 @@
 
 {% block body %}
 <div class="row">
-  <div class="xlarge btn default"><a href="#">{{ environ.name }}</a></div>
+  <div class="xlarge btn default"><a href="#" onclick="$('#doc').toggle();">{{ environ.name }}</a></div>
+  <div id="doc" style="display: none"><pre>{{ environ_doc }}</pre></div>
 </div>
 <div>
   <h3>Registered Jobs</h3>

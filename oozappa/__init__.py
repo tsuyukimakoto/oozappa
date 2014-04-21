@@ -8,7 +8,7 @@ import json
 
 from oozappa.records import Environment, Job, Jobset, JobsetJobList, ExecuteLog, get_db_session, init as init_db
 from oozappa.forms import EnvironmentForm, JobForm, JobSetForm
-from oozappa.fabrictools import get_tasks
+from oozappa.fabrictools import FabricHelper
 
 import logging
 from uuid import uuid4
@@ -172,12 +172,13 @@ def add_environment():
 def environment(environment_id):
   session = get_db_session()
   environ = session.query(Environment).get(environment_id)
+  helper = FabricHelper(environ.execute_path)
   error_message = None
   form = JobForm()
   if not environ:
     abort(404)
   if form.validate_on_submit():
-    not_found_tasks = get_tasks(environ.execute_path, form.tasks.data.split(' ')).get('not_found')
+    not_found_tasks = helper.get_tasks(form.tasks.data.split(' ')).get('not_found')
     if len(not_found_tasks) == 0:
       job = Job()
       job.name = form.name.data
@@ -188,7 +189,8 @@ def environment(environment_id):
       return redirect(url_for('environment', environment_id=environment_id))
     error_message = 'tasks [{0}] not found.'.format(','.join(not_found_tasks))
   form.environment_id.data = environ.id
-  return render_template('environment.html', form=form, environ=environ, error_message=error_message)
+  return render_template('environment.html', form=form,
+    environ=environ, environ_doc=helper.doc, error_message=error_message)
 
 @app.route('/jobsets')
 def jobsets():
