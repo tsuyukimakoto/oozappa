@@ -22,12 +22,14 @@ class OozappaSetting(dict):
 ...   spam = '123',
 ...   egg = 123
 ... )
-...
->>> assert(settings.spam == '123)
+>>> assert(settings.spam == '123')
 >>> assert(settings.egg == 123)
 >>> settings.ham = 123.0
 >>> assert(settings.ham == 123.0)
->>> s2 = OozappaSetting(dict())
+>>> s2 = OozappaSetting(dict(spam=456))
+>>> settings.update(s2)
+>>> assert(settings.spam == 456)
+>>> assert(settings.ham == 123.0)
   '''
   def __init__(self, *args, **kwargs) :
     for d in args:

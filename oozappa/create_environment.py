@@ -6,7 +6,7 @@ import logging
 
 logger = logging.getLogger('oozappa')
 
-def test():
+def main():
   environ_names = sys.argv[1:]
   if len(environ_names) == 0:
     while 1:
@@ -22,4 +22,4 @@ def test():
     logger.info('create environment : {0}'.format(environ_name))
 
 if __name__ == '__main__':
-  test()
+  main()

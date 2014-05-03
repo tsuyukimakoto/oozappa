@@ -238,4 +238,4 @@ def get_execute_log(id):
 if __name__ == '__main__':
   pass
 
-#gunicorn -k flask_sockets.worker oozappa:app
+#gunicorn -t 3600 -k flask_sockets.worker oozappa:app
