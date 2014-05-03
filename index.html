@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Oozappa by tsuyukimakoto</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Oozappa</h1>
+        <h2>Fabric task runner and helper. Execute tasks via web browser.</h2>
+        <a href="https://github.com/tsuyukimakoto/oozappa" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <p>oozappa is 大雑把.</p>
+
+<h1>
+<a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>install</h1>
+
+<pre><code>$ git clone https://github.com/tsuyukimakoto/oozappa.git oozappa
+$ cd oozappa
+$ ln -s `pwd`/oozappa VIRTUALENV/lib/Python2.7/site-packages/oozappa
+$ pip install -r requirements.txt
+</code></pre>
+
+<p>If you use Xcode 5.1(above) and failed with <strong>clang: error: unknown argument: '-mno-fused-madd'</strong>, export flags before install pycrypt (before pip install -r requirements.txt).</p>
+
+<pre><code>$ export CPPFLAGS=-Qunused-arguments
+$ export CFLAGS=-Qunused-arguments
+</code></pre>
+
+<h1>
+<a name="oozappa-data-models" class="anchor" href="#oozappa-data-models"><span class="octicon octicon-link"></span></a>oozappa data models.</h1>
+
+<h2>
+<a name="environment" class="anchor" href="#environment"><span class="octicon octicon-link"></span></a>Environment</h2>
+
+<p>Environment is a category that has fibfile directory and vars.py .</p>
+
+<p>A problem about fabric with large project is, too many fabric tasks and complicated task orders.</p>
+
+<p>So you should separate fabfile into domain category. That is Environment.</p>
+
+<h2>
+<a name="job" class="anchor" href="#job"><span class="octicon octicon-link"></span></a>Job</h2>
+
+<p>Job is like a normal fabric execution command.</p>
+
+<p><em>eg. fab task1 task2 is a job.</em></p>
+
+<h2>
+<a name="jobset" class="anchor" href="#jobset"><span class="octicon octicon-link"></span></a>Jobset</h2>
+
+<p>Jobset is oozappa operation unit.</p>
+
+<p>Jobset can contain multiple job, even extend over environments. </p>
+
+<h1>
+<a name="oozappa-fabric-structures" class="anchor" href="#oozappa-fabric-structures"><span class="octicon octicon-link"></span></a>oozappa fabric structures.</h1>
+
+<p>see sample oozappa project(sample/ops).</p>
+
+<pre><code>.
+├── common
+│   ├── __init__.py
+│   ├── files
+│   ├── functions
+│   │   ├── common_multiple_fabric_environment.py
+│   ├── templates
+│   │   └── sample_a.txt
+│   └── vars.py
+├── construction
+│   ├── fabfile
+│   │   ├── __init__.py
+│   ├── templates
+│   └── vars.py
+├── deployment
+│   ├── fabfile
+│   │   ├── __init__.py
+│   ├── templates
+│   └── vars.py
+├── production
+│   ├── fabfile
+│   │   ├── __init__.py
+│   ├── templates
+│   └── vars.py
+└── staging
+    ├── fabfile
+    │   ├── __init__.py
+    ├── templates
+    │   └── sample_a.txt
+    └── vars.py
+</code></pre>
+
+<p><strong>common</strong> is reserved directory. <strong>construction</strong> and others are environment directory. These names are just example.</p>
+
+<h2>
+<a name="vars" class="anchor" href="#vars"><span class="octicon octicon-link"></span></a>vars</h2>
+
+<p>common and each environment's vars.py might have oozappa.config.OozappaSetting instance named settings.
+OozappaSetting is dict like object.
+common.vars.setting is updated by executed environment's vars.setting, so you can set base configuration to common.vars.setting and environment's one overwrite it.</p>
+
+<p>Check printsetting task on staging environment.</p>
+
+<p>You can run fabric task within environment directory as usual.</p>
+
+<pre><code>$ cd sample/ops/staging
+$ fab printsetting
+{'instance_type': 't1.micro', 'domain': 'localhost', 'sample_template_vars': {'sample_a': {'key_a_2': "a's 2 value from common.vars", 'key_a_1': "a's 1 value from stging.vars"}}, 'email': 'mtsuyuki at gmail.com'}
+</code></pre>
+
+<p>See common/vars.py and staging/vars.py .</p>
+
+<h2>
+<a name="templates" class="anchor" href="#templates"><span class="octicon octicon-link"></span></a>templates</h2>
+
+<p>Same as vars, <strong>oozappa.fabrictools.upload_template</strong> search template. upload_template is almost same as <strong>fabric.contrib.files.upload_template</strong> . oozappa's upload_template doesn't accept use_jinja, because oozappa's upload_template pass use_jinja=True to fabric.contrib.files.upload_template.</p>
+
+<p>Jinja2 has inheritance template system and search template from multipul paths. fabric's upload_template accept only one template_dir string not list. <strong>fabric doesn't assume multiplu environment</strong>, so it's reasonable.
+Because of this, oozappa's upload_template search template path is limited only one template_dir that found filename.
+It mean that you can't store child template and parent template separately.</p>
+
+<h2>
+<a name="commonfunctions" class="anchor" href="#commonfunctions"><span class="octicon octicon-link"></span></a>common/functions</h2>
+
+<p>Call <strong>oozappa.config.procure_common_functions</strong>() and add commons/functions directory to sys.path for convinient to using on multiple fabric environment.</p>
+
+<h1>
+<a name="run-fabric-task-via-web-browser" class="anchor" href="#run-fabric-task-via-web-browser"><span class="octicon octicon-link"></span></a>run fabric task via web browser.</h1>
+
+<p>Change directory to outside environment directory.</p>
+
+<pre><code>$ cd ..
+$ ls
+common      production  staging
+$ gunicorn -t 3600 -k flask_sockets.worker oozappa:app
+</code></pre>
+
+<p>Running oozappa:app creates <strong>/tmp/oozappa.sqlite</strong> .</p>
+
+<p>Open your web browser and browse http://localhost:8000/ .</p>
+
+<h2>
+<a name="rapid-execution" class="anchor" href="#rapid-execution"><span class="octicon octicon-link"></span></a>rapid execution</h2>
+
+<p>Modify <em>Run fabric in raw</em>'s left hand side input to <strong>staging</strong> and click <em>run_tasks</em>. You can see what tasks exists.</p>
+
+<p>Then input <strong>ls ps</strong> to right hand side input and click <em>run_tasks</em> .</p>
+
+<p>That's it.</p>
+
+<h2>
+<a name="better-way-using-sample" class="anchor" href="#better-way-using-sample"><span class="octicon octicon-link"></span></a>better way using sample</h2>
+
+<h3>
+<a name="register-environment-to-db" class="anchor" href="#register-environment-to-db"><span class="octicon octicon-link"></span></a>register environment to db.</h3>
+
+<ul>
+<li>Click environment button via top menu.</li>
+<li>Add new Environment
+
+<ul>
+<li>name: constructiton </li>
+<li>sort_order: 1</li>
+<li>execute_path: constructiton</li>
+</ul>
+</li>
+<li>Add 3 more.</li>
+</ul><p><img src="https://dl.dropboxusercontent.com/u/382460/oozappa/readme/environments.png" alt="environments" title="environments"></p>
+
+<h3>
+<a name="create-job-in-each-environments" class="anchor" href="#create-job-in-each-environments"><span class="octicon octicon-link"></span></a>create job in each environments.</h3>
+
+<ul>
+<li>Click environment you created</li>
+<li>Create new Job.
+
+<ul>
+<li>Click task from Possible tasks in order</li>
+</ul>
+</li>
+</ul><p><img src="https://dl.dropboxusercontent.com/u/382460/oozappa/readme/create_job.png" alt="job" title="job"></p>
+
+<h3>
+<a name="create-jobset" class="anchor" href="#create-jobset"><span class="octicon octicon-link"></span></a>create jobset</h3>
+
+<ul>
+<li>Click jobset button via top menu.</li>
+<li>Click jobs you'd like to execute once.</li>
+</ul><p><img src="https://dl.dropboxusercontent.com/u/382460/oozappa/readme/create_jobset.png" alt="jobset" title="jobset"></p>
+
+<h3>
+<a name="run-jobset" class="anchor" href="#run-jobset"><span class="octicon octicon-link"></span></a>run jobset</h3>
+
+<ul>
+<li>Click navigation button or jobset button via top menu.</li>
+<li>Click jobset you'd like to execute.</li>
+<li>Click <em>run jobset</em> button.</li>
+<li>Running log displays <strong>Running log</strong>.</li>
+<li>Reload page when jobset done. or Go to top(via navigation button)
+
+<ul>
+<li>You see Execute Logs and show raw log when you click success (or fail).</li>
+</ul>
+</li>
+</ul><p><img src="https://dl.dropboxusercontent.com/u/382460/oozappa/readme/jobset.png" alt="runnig jobset" title="running jobset"></p>
+
+<h1>
+<a name="how-to-create-your-own" class="anchor" href="#how-to-create-your-own"><span class="octicon octicon-link"></span></a>How to create your own</h1>
+
+<h2>
+<a name="create-common-directory" class="anchor" href="#create-common-directory"><span class="octicon octicon-link"></span></a>Create common directory</h2>
+
+<p>Change directory your own oozappa.</p>
+
+<pre><code>$ mkdir devops
+$ cd devops
+</code></pre>
+
+<p>Then run oozappa.</p>
+
+<pre><code>$ python -m oozappa
+Create common environment here? [y/N]y
+create common directory. db file path and flask secret key are in common/vars.py.
+</code></pre>
+
+<h2>
+<a name="change-default-settings" class="anchor" href="#change-default-settings"><span class="octicon octicon-link"></span></a>change default settings</h2>
+
+<p>Open <code>common/vars.py</code> and change settings using temp directory. Or results disapear when you reboot your machine or server.</p>
+
+<ul>
+<li>
+<strong>OOZAPPA_DB</strong> : sqlite's data store path.</li>
+<li>
+<strong>OOZAPPA_LOG_BASEDIR</strong> : Jobset execute log store directory path.</li>
+</ul><h2>
+<a name="create-environment" class="anchor" href="#create-environment"><span class="octicon octicon-link"></span></a>create environment</h2>
+
+<p>Run oozappa.create_environment with environment name(s).</p>
+
+<pre><code>$ python -m oozappa.create_environment construction deployment
+2014-04-20 16:43:26,543 INFO create environment : construction
+2014-04-20 16:43:26,544 INFO create environment : deployment
+</code></pre>
+
+<p>Then you can write fabfile normally and execute via oozappa.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/tsuyukimakoto/oozappa/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/tsuyukimakoto/oozappa/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/tsuyukimakoto/oozappa"></a> is maintained by <a href="https://github.com/tsuyukimakoto">tsuyukimakoto</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
