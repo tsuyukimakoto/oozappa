@@ -248,8 +248,8 @@ Then you can write fabfile normally and execute via oozappa.
 
 from distutils.core import setup
 
-setup(name='Oozappa',
-      version='0.8',
+setup(name='oozappa',
+      version='0.8.0',
       description='Fabric task runner and helper. Executes and manages tasks via web browser.',
       author='makoto tsuyuki',
       author_email='mtsuyuki@gmail.com',
