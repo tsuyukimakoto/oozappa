@@ -16,6 +16,12 @@ Install
 
     $ pip install oozappa
 
+If you use Xcode 5.1(above) and failed with **clang: error: unknown argument: '-mno-fused-madd'** , export flags before install.
+::
+
+    $ export CPPFLAGS=-Qunused-arguments
+    $ export CFLAGS=-Qunused-arguments
+
 Oozappa data models.
 -------------------------------------------
 
@@ -249,7 +255,7 @@ Then you can write fabfile normally and execute via oozappa.
 from distutils.core import setup
 
 setup(name='oozappa',
-      version='0.8.0',
+      version='0.8.1',
       description='Fabric task runner and helper. Executes and manages tasks via web browser.',
       author='makoto tsuyuki',
       author_email='mtsuyuki@gmail.com',
@@ -275,7 +281,11 @@ setup(name='oozappa',
           'Topic :: System :: Software Distribution',
           'Topic :: System :: Systems Administration',
       ],
-      packages=['oozappa',],
+      packages=['oozappa', 'oozappa.records',],
+      # data_files=[('oozappa', ['_structure', 'static', 'templates']),],
+      package_data={'oozappa': ['_structure/_environment/vars.py','_structure/_environment/*/*', '_structure/_environment/templates/*',
+        '_structure/common/vars.py','_structure/common/__init__.py','_structure/common/*/*', 'static/css/*', 'templates/*']},
+      include_package_data=True,
       install_requires=['Fabric>=1.8.3','Flask-WTF>=0.9.5','Flask-SQLAlchemy>=1.0','Flask-Sockets>=0.1',
         'Jinja2>=2.7.2', 'Pygments>=1.6', 'gevent-websocket>=0.9.3','gunicorn>=18.0',],
      )

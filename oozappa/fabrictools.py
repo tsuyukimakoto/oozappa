@@ -29,7 +29,7 @@ class FabricHelper(object):
         if 'fabfile' in sys.modules.keys():
             del sys.modules['fabfile']
         self.doc, _dict = load_fabfile(_path)[:2]
-        self.task_dict = dict((x.name, FabricTask(x)) for x in _dict.values())
+        self.task_dict = dict((x.name, FabricTask(x)) for x in _dict.values() if hasattr(x, 'name'))
         self.directory = os.path.split(path)[0]
 
     def task_list(self):
