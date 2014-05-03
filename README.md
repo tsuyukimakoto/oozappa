@@ -13,6 +13,10 @@ install
     $ ln -s `pwd`/oozappa VIRTUALENV/lib/Python2.7/site-packages/oozappa
     $ pip install -r requirements.txt
 
+or install from Cheese Shop (pypi).
+
+    $ pip install oozappa
+
 If you use Xcode 5.1(above) and failed with __clang: error: unknown argument: '-mno-fused-madd'__, export flags before install pycrypt (before pip install -r requirements.txt).
 
     $ export CPPFLAGS=-Qunused-arguments
