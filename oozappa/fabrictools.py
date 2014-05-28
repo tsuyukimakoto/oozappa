@@ -9,15 +9,23 @@ import logging
 logger = logging.getLogger('oozappa')
 
 class FabricTask(object):
-    def __init__(self, task_dict):
+    def __init__(self, task_dict, m=None):
         self._task_dict = task_dict
+        self._m = m
+
+    @property
     def name(self):
+        if self._m:
+            return '{0}.{1}'.format(self._m, self._task_dict.name)
         return self._task_dict.name
+
     @property
     def description(self):
         return self._task_dict.__doc__ or u''
+
     def __str__(self):
-        return self.name()
+        return self.name
+
     def __repr__(self):
         return self.__str__()
 
@@ -30,6 +38,10 @@ class FabricHelper(object):
             del sys.modules['fabfile']
         self.doc, _dict = load_fabfile(_path)[:2]
         self.task_dict = dict((x.name, FabricTask(x)) for x in _dict.values() if hasattr(x, 'name'))
+        _modules = [k for k, m in _dict.items() if not hasattr(m, 'name')]
+        for _m in _modules:
+            self.task_dict.update(dict(('{0}.{1}'.format(_m, x.name), FabricTask(x, m=_m)) for x in _dict[_m].values() if hasattr(x, 'name')))
+        print(self.task_dict)
         self.directory = os.path.split(path)[0]
 
     def task_list(self):

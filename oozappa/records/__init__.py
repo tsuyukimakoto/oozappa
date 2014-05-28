@@ -15,6 +15,7 @@ from functools import wraps
 import logging
 logger = logging.getLogger('oozappa')
 
+from oozappa.fabrictools import FabricHelper
 
 def need_task(f):
     @wraps(f)
@@ -22,7 +23,7 @@ def need_task(f):
         if not hasattr(self, 'task_dict'):
             if 'fabfile' in sys.modules.keys():
                 del sys.modules['fabfile']
-            self.task_dict = load_fabfile(os.path.join(self.execute_path, 'fabfile'))[1]
+            self.task_dict = FabricHelper(os.path.join(self.execute_path, 'fabfile')).task_list()
         return f(self, *args, **kwargs)
     return inner
 
