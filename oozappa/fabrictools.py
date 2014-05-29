@@ -41,7 +41,6 @@ class FabricHelper(object):
         _modules = [k for k, m in _dict.items() if not hasattr(m, 'name')]
         for _m in _modules:
             self.task_dict.update(dict(('{0}.{1}'.format(_m, x.name), FabricTask(x, m=_m)) for x in _dict[_m].values() if hasattr(x, 'name')))
-        print(self.task_dict)
         self.directory = os.path.split(path)[0]
 
     def task_list(self):
