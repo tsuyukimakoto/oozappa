@@ -8,6 +8,14 @@ Fabric task runner and helper. Execute tasks via web browser.
 
 oozappa is 大雑把.
 
+Change logs.
+-------------------------------------------
+
+0.8.2
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Oozappa finds tasks from imported modules, not recursive.
+
 Install
 -------------------------------------------
 
@@ -68,6 +76,7 @@ See sample oozappa project( https://github.com/tsuyukimakoto/oozappa/tree/master
     ├── construction
     │   ├── fabfile
     │   │   ├── __init__.py
+    │   │   └── cloud.py
     │   ├── templates
     │   └── vars.py
     ├── deployment
@@ -255,7 +264,7 @@ Then you can write fabfile normally and execute via oozappa.
 from distutils.core import setup
 
 setup(name='oozappa',
-      version='0.8.1',
+      version='0.8.2',
       description='Fabric task runner and helper. Executes and manages tasks via web browser.',
       author='makoto tsuyuki',
       author_email='mtsuyuki@gmail.com',
