@@ -8,12 +8,7 @@ oozappa is 大雑把.
 install
 =======
 
-    $ git clone https://github.com/tsuyukimakoto/oozappa.git oozappa
-    $ cd oozappa
-    $ ln -s `pwd`/oozappa VIRTUALENV/lib/Python2.7/site-packages/oozappa
-    $ pip install -r requirements.txt
-
-or install from Cheese Shop (pypi).
+Install from Cheese Shop (pypi).
 
     $ pip install oozappa
 
@@ -182,15 +177,21 @@ Change directory your own oozappa.
     $ mkdir devops
     $ cd devops
 
-Then run oozappa.
+Then run zappa command.
 
-    $ python -m oozappa
-    Create common environment here? [y/N]y
-    create common directory. db file path and flask secret key are in common/vars.py.
+    $ zappa init
+    Create common environment here? [y/N] : y
+    Sqlite database stored path. [/tmp/oozappa/data.sqlite] :
+    Log files stored path. [/tmp/oozappa] :
+    Create directory or exit? "/tmp/oozappa" [y/N] : y
+    created common directory. db/log file path and flask secret key are in common/vars.py.
 
-## change default settings
+> attention:: Default stored path is not for production use.
+  You should input your own file/directory path. Or data/results disapear when you reboot your machine or server.
 
-Open `common/vars.py` and change settings using temp directory. Or results disapear when you reboot your machine or server.
+## How to Change settings
+
+Open `common/vars.py` and change settings.
 
 * __OOZAPPA_DB__ : sqlite's data store path.
 * __OOZAPPA_LOG_BASEDIR__ : Jobset execute log store directory path.
@@ -199,8 +200,8 @@ Open `common/vars.py` and change settings using temp directory. Or results disap
 
 Run oozappa.create_environment with environment name(s).
 
-	$ python -m oozappa.create_environment construction deployment
-	2014-04-20 16:43:26,543 INFO create environment : construction
-	2014-04-20 16:43:26,544 INFO create environment : deployment
+    $ zappa create_environment --names construction deployment
+    2014-04-20 16:43:26,543 INFO create environment : construction
+    2014-04-20 16:43:26,544 INFO create environment : deployment
 
 Then you can write fabfile normally and execute via oozappa.

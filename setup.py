@@ -24,6 +24,7 @@ Oozappa finds tasks from imported modules, not recursive.
 Install
 -------------------------------------------
 
+Install from Cheese Shop (pypi).
 
 ::
 
@@ -246,7 +247,7 @@ Then run zappa command.
 .. attention:: Default stored path is not for production use.
    You should input your own file/directory path. Or data/results disapear when you reboot your machine or server.
 
-Change default settings
+How to change settings
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Open `common/vars.py` and change settings.
