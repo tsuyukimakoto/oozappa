@@ -260,7 +260,7 @@ Run oozappa.create_environment with environment name(s).
 
 Then you can write fabfile normally and execute via oozappa.
 '''
-
+import setuptools
 from distutils.core import setup
 
 setup(name='oozappa',
@@ -270,6 +270,10 @@ setup(name='oozappa',
       author_email='mtsuyuki@gmail.com',
       url='https://github.com/tsuyukimakoto/oozappa',
       zip_safe=False,
+      entry_points='''
+            [console_scripts]
+            zappa = oozappa.zappa:main
+            ''',
       long_description=__doc__,
       classifiers=['Development Status :: 3 - Alpha',
           'Environment :: Console',
