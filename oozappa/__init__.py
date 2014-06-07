@@ -7,9 +7,11 @@ import shutil
 
 import logging
 
-logging.basicConfig(level=logging.WARN, format='%(asctime)s %(levelname)s %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 logger = logging.getLogger('oozappa')
-logger.setLevel(logging.DEBUG)
+
+version_info = (0, 8, 3)
+__version__ = ".".join([str(v) for v in version_info])
 
 class exec_fabric:
     def __init__(self, wsckt, path):

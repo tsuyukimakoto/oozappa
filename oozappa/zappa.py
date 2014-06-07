@@ -12,6 +12,8 @@ _settings = get_config()
 
 from oozappa.records import init as init_db
 
+from oozappa import __version__
+
 DEFAULT_OOZAPPA_PATH = '/tmp/oozappa'
 DEFAULT_OOZAPPA_DATAPATH = '{DEFAULT_OOZAPPA_PATH}/data.sqlite'.format(
   DEFAULT_OOZAPPA_PATH=DEFAULT_OOZAPPA_PATH)
@@ -60,7 +62,7 @@ def init(args):
             DEFAULT_OOZAPPA_DATAPATH=DEFAULT_OOZAPPA_DATAPATH))
         )
         log_file_path = _create_logfile_stored_path(
-          raw_input('Log file stored path. [{DEFAULT_OOZAPPA_PATH}] : '.format(
+          raw_input('Log files stored path. [{DEFAULT_OOZAPPA_PATH}] : '.format(
             DEFAULT_OOZAPPA_PATH=DEFAULT_OOZAPPA_PATH))
         )
         current = os.getcwd()
@@ -93,6 +95,8 @@ def create_environment(args):
     shutil.copytree(os.path.join(os.path.dirname(__file__), '_structure', '_environment'), environ_name)
     logger.info('create environment : {0}'.format(environ_name))
 
+def print_version(args):
+  print('Oozappa/{0}'.format(__version__))
 
 import argparse
 
@@ -104,5 +108,7 @@ def main():
     create_environemnt_parser = subparsers.add_parser('create_environment', help='Create oozappa environment structure.')
     create_environemnt_parser.add_argument('--names', nargs='+', default=[])
     create_environemnt_parser.set_defaults(func=create_environment)
+    version_parser = subparsers.add_parser('version', help='show Oozappa version')
+    version_parser.set_defaults(func=print_version)
     args = parser.parse_args()
     args.func(args)

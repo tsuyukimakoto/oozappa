@@ -17,7 +17,7 @@ from flask_sockets import Sockets
 
 logging.basicConfig(level=logging.WARN, format='%(asctime)s %(levelname)s %(message)s')
 logger = logging.getLogger('oozappa')
-logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.DEBUG)
 
 app = Flask('oozappa')
 from oozappa.config import get_config, procure_common_functions

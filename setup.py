@@ -11,6 +11,11 @@ oozappa is 大雑把.
 Change logs.
 -------------------------------------------
 
+0.8.3
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A zappa command added and removed oozappa.create_environment module.
+
 0.8.2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -228,17 +233,23 @@ Change directory your own oozappa.
     $ mkdir devops
     $ cd devops
 
-Then run oozappa.
+Then run zappa command.
 ::
 
-    $ python -m oozappa
-    Create common environment here? [y/N]y
-    create common directory. db file path and flask secret key are in common/vars.py.
+    $ zappa init
+    Create common environment here? [y/N] : y
+    Sqlite database stored path. [/tmp/oozappa/data.sqlite] :
+    Log files stored path. [/tmp/oozappa] :
+    Create directory or exit? "/tmp/oozappa" [y/N] : y
+    created common directory. db/log file path and flask secret key are in common/vars.py.
+
+.. attention:: Default stored path is not for production use.
+   You should input your own file/directory path. Or data/results disapear when you reboot your machine or server.
 
 Change default settings
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Open `common/vars.py` and change settings using temp directory. Or results disapear when you reboot your machine or server.
+Open `common/vars.py` and change settings.
 
 * **OOZAPPA_DB**
 
@@ -251,10 +262,10 @@ Open `common/vars.py` and change settings using temp directory. Or results disap
 Create environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Run oozappa.create_environment with environment name(s).
+Run `zappa` command with names option.
 ::
 
-  $ python -m oozappa.create_environment construction deployment
+  $ zappa create_environment --names construction deployment
   2014-04-20 16:43:26,543 INFO create environment : construction
   2014-04-20 16:43:26,544 INFO create environment : deployment
 
@@ -263,8 +274,11 @@ Then you can write fabfile normally and execute via oozappa.
 import setuptools
 from distutils.core import setup
 
+from oozappa import __version__
+
 setup(name='oozappa',
-      version='0.8.2',
+      # version='0.8.3',
+      version=__version__,
       description='Fabric task runner and helper. Executes and manages tasks via web browser.',
       author='makoto tsuyuki',
       author_email='mtsuyuki@gmail.com',
