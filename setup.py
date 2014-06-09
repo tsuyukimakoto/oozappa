@@ -146,7 +146,7 @@ Change directory to outside environment directory.
     $ cd ..
     $ ls
     common    production  staging
-    $ gunicorn -t 3600 -k flask_sockets.worker oozappa:app
+    $ gunicorn -t 3600 -k flask_sockets.worker oozappa.webui:app
 
 Running oozappa:app creates **/tmp/oozappa.sqlite** .
 
@@ -278,7 +278,6 @@ from distutils.core import setup
 from oozappa import __version__
 
 setup(name='oozappa',
-      # version='0.8.3',
       version=__version__,
       description='Fabric task runner and helper. Executes and manages tasks via web browser.',
       author='makoto tsuyuki',
@@ -310,7 +309,6 @@ setup(name='oozappa',
           'Topic :: System :: Systems Administration',
       ],
       packages=['oozappa', 'oozappa.records',],
-      # data_files=[('oozappa', ['_structure', 'static', 'templates']),],
       package_data={'oozappa': ['_structure/_environment/vars.py','_structure/_environment/*/*', '_structure/_environment/templates/*',
         '_structure/common/vars.py','_structure/common/__init__.py','_structure/common/*/*', 'static/css/*', 'templates/*']},
       include_package_data=True,
