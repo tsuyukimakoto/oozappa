@@ -39,7 +39,7 @@ class exec_fabric:
       start_time = time.time()
       logger.debug('doit from running websocket: fab {0}'.format(' '.join(fabric_commands)))
       p = subprocess.Popen(["fab"] + fabric_commands,
-          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
       stderr = p.stdout
       while True:
         line = stderr.readline()
