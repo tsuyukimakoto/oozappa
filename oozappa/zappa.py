@@ -26,7 +26,7 @@ def _ensure_directory(pth):
             print('aborted')
             sys.exit(-1)
     if not os.path.isdir(pth):
-        print('{0} is not directory.'.format(path))
+        print('{0} is not directory.'.format(pth))
         print('aborted')
         sys.exit(-1)
     if not os.access(pth, os.W_OK | os.X_OK):
