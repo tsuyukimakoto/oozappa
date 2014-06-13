@@ -67,7 +67,6 @@ def init(args):
                 raw_input('Log files stored path. [{DEFAULT_OOZAPPA_PATH}] : '.format(
                     DEFAULT_OOZAPPA_PATH=DEFAULT_OOZAPPA_PATH))
             )
-            current = os.getcwd()
             shutil.copytree(os.path.join(os.path.dirname(__file__), '_structure', 'common'), 'common')
             with open('common/vars.py') as f:
                 data = f.read()
