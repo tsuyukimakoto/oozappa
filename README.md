@@ -32,13 +32,13 @@ So you should separate fabfile into domain category. That is Environment.
 
 Job is like a normal fabric execution command.
 
- _eg. fab task1 task2 is a job._
+    _eg. fab task1 task2 is a job._
 
 ## Jobset
 
 Jobset is oozappa operation unit.
 
-Jobset can contain multiple job, even extend over environments. 
+Jobset can contain multiple job, even extend over environments.
 
 oozappa fabric structures.
 =======
@@ -113,7 +113,7 @@ Change directory to outside environment directory.
 
     $ cd ..
     $ ls
-    common		production	staging
+    common              production      staging
     $ gunicorn -t 3600 -k flask_sockets.worker oozappa.webui:app
 
 Running oozappa:app creates __/tmp/oozappa.sqlite__ .
@@ -134,9 +134,9 @@ That's it.
 
 * Click environment button via top menu.
 * Add new Environment
-	* name: constructiton 
-	* sort_order: 1
-	* execute_path: constructiton
+    * name: constructiton
+    * sort_order: 1
+    * execute_path: constructiton
 * Add 3 more.
 
 ![environments](https://dl.dropboxusercontent.com/u/382460/oozappa/readme/environments.png "environments")
@@ -145,7 +145,7 @@ That's it.
 
 * Click environment you created
 * Create new Job.
-	* Click task from Possible tasks in order
+    * Click task from Possible tasks in order
 
 ![job](https://dl.dropboxusercontent.com/u/382460/oozappa/readme/create_job.png "job")
 
@@ -163,7 +163,7 @@ That's it.
 * Click _run jobset_ button.
 * Running log displays __Running log__.
 * Reload page when jobset done. or Go to top(via navigation button)
-	* You see Execute Logs and show raw log when you click success (or fail).
+    * You see Execute Logs and show raw log when you click success (or fail).
 
 ![runnig jobset](https://dl.dropboxusercontent.com/u/382460/oozappa/readme/jobset.png "running jobset")
 
@@ -187,7 +187,7 @@ Then run zappa command.
     created common directory. db/log file path and flask secret key are in common/vars.py.
 
 > attention:: Default stored path is not for production use.
-  You should input your own file/directory path. Or data/results disapear when you reboot your machine or server.
+    You should input your own file/directory path. Or data/results disapear when you reboot your machine or server.
 
 ## How to Change settings
 

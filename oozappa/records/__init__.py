@@ -17,6 +17,7 @@ logger = logging.getLogger('oozappa')
 
 from oozappa.fabrictools import FabricHelper
 
+
 def need_task(f):
     @wraps(f)
     def inner(self, *args, **kwargs):
@@ -27,12 +28,13 @@ def need_task(f):
         return f(self, *args, **kwargs)
     return inner
 
+
 class Environment(Base):
     '''Target, normally this indicates fabfile.py or fabfile directory'''
     __tablename__ = 'environment'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String,unique=True)
+    name = Column(String, unique=True)
     sort_order = Column(Integer)
     execute_path = Column(String)
 
@@ -44,8 +46,9 @@ class Environment(Base):
         return self.task_dict.values()
 
     def __repr__(self):
-       return "<Environment(name='%s', sort_order='%d', execute_path='%s')>" % (
-                            self.name, self.sort_order, self.execute_path)
+        return "<Environment(name='%s', sort_order='%d', execute_path='%s')>" % (
+            self.name, self.sort_order, self.execute_path)
+
 
 class Jobset(Base):
     __tablename__ = 'jobset'
@@ -56,6 +59,7 @@ class Jobset(Base):
     @property
     def jobs(self):
         return [j.job for j in self.jobsetlist]
+
 
 class Job(Base):
     __tablename__ = 'job'
@@ -70,6 +74,7 @@ class Job(Base):
     def choices():
         return [(x.id, x.name) for x in get_db_session().query(Job).all()]
 
+
 class JobsetJobList(Base):
     __tablename__ = 'jobset_job'
     id = Column(Integer, primary_key=True)
@@ -77,8 +82,7 @@ class JobsetJobList(Base):
     job_id = Column(Integer, ForeignKey('job.id'))
 
     jobset = relationship("Jobset", backref=backref('jobsetlist', order_by=id))
-    job    = relationship("Job", backref=backref('jobsetlist', order_by=id))
-
+    job = relationship("Job", backref=backref('jobsetlist', order_by=id))
 
 
 class ExecuteLog(Base):
@@ -103,19 +107,18 @@ class ExecuteLog(Base):
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from oozappa.config import get_config, procure_common_functions
+from oozappa.config import get_config
 _settings = get_config()
 
+
 def get_db_session():
-    engine = create_engine(_settings.OOZAPPA_DB, echo=False) #
+    engine = create_engine(_settings.OOZAPPA_DB, echo=False)
     Session = sessionmaker(bind=engine)
     return Session()
 
+
 def init():
     from sqlalchemy import create_engine
-    engine = create_engine(_settings.OOZAPPA_DB, echo=False) #
-
-    from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
-    metadata = Base.metadata #this knows table mapping class.
-    metadata.create_all(engine) #create table if not exists.
-
+    engine = create_engine(_settings.OOZAPPA_DB, echo=False)
+    metadata = Base.metadata  # this knows table mapping class.
+    metadata.create_all(engine)  # create table if not exists.
