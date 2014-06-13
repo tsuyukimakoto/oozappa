@@ -2,8 +2,9 @@
 import os
 from flask_wtf import Form
 from wtforms.widgets import TextArea, HiddenInput
-from wtforms import TextField, IntegerField, SelectMultipleField, FieldList
+from wtforms import TextField, IntegerField, SelectMultipleField
 from wtforms.validators import DataRequired, NumberRange, ValidationError
+
 
 class EnvironmentForm(Form):
     name = TextField('name', validators=[DataRequired()])
@@ -14,6 +15,7 @@ class EnvironmentForm(Form):
         if field.data and (not os.path.exists(field.data)):
             raise ValidationError('path {0} not found.'.format(field.data))
 
+
 class JobForm(Form):
     name = TextField('name', validators=[DataRequired()])
     description = TextField('description', widget=TextArea(), validators=[DataRequired()])
@@ -21,6 +23,7 @@ class JobForm(Form):
     tasks = TextField('tasks',
         #widget=HiddenInput,
         validators=[DataRequired()])
+
 
 class JobSetForm(Form):
     title = TextField('title', validators=[DataRequired()])

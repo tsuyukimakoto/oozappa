@@ -62,7 +62,7 @@ Jobset
 
 Jobset is oozappa operation unit.
 
-Jobset can contain multiple job, even extend over environments. 
+Jobset can contain multiple job, even extend over environments.
 
 Oozappa fabric structures.
 -------------------------------------------
@@ -171,7 +171,7 @@ ___________________________
 
 * Add new Environment
 
-  * name: constructiton 
+  * name: constructiton
 
   * sort_order: 1
 
