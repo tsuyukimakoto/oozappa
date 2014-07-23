@@ -1,0 +1,3 @@
+recursive-include oozappa/_structure *.py *.txt
+recursive-include oozappa/static *.css
+recursive-include oozappa/templates *.html
