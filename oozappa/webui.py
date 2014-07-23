@@ -53,7 +53,6 @@ def _datetimefmt(d):
 LOCK_FILE_NAME = 'oozappa_lock_file'
 
 def _is_locked():
-    print('----- {0}'.format(os.path.exists(LOCK_FILE_NAME)))
     return os.path.exists(LOCK_FILE_NAME)
 
 def _locked_time():
