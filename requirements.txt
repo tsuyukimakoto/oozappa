@@ -18,3 +18,4 @@ itsdangerous==0.23
 paramiko==1.12.3
 pycrypto==2.6.1
 wsgiref==0.1.2
+filelock==0.2.0

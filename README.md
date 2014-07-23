@@ -114,7 +114,7 @@ Change directory to outside environment directory.
     $ cd ..
     $ ls
     common		production	staging
-    $ gunicorn -t 3600 -k flask_sockets.worker oozappa.webui:app
+    $ gunicorn -t 3600 -w 4 -k flask_sockets.worker oozappa.webui:app
 
 Running oozappa:app creates __/tmp/oozappa.sqlite__ .
 

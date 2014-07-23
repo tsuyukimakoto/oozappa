@@ -3,6 +3,29 @@
   <title>{% block title %}{% endblock %}</title>
   <link rel="stylesheet" href="/static/css/gumby.css">
   <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+  <script type="text/javascript">
+  _is_running_something = function() {
+      $.ajax({
+        type: 'GET',
+        url: "/is_running_something.json",
+        cache: false,
+        dataType: 'json',
+        success: function(res){
+          if(res.running == true) {
+            $("#display_locked").css('visibility', 'visible');
+            $("#locked_time").text(res.locked_time);
+          } else {
+            $("#display_locked").css('visibility', 'hidden');
+          }
+        }
+      });
+      setTimeout("_is_running_something()",5000);
+  }
+  $(document).ready(function(){
+    _is_running_something();
+  });
+  </script>
 </head>
 <body>
   <div class="row">
@@ -10,6 +33,11 @@
       <li class="dark label"><a href="/">navigation</a></li>
       <li class="primary label"><a href="{{ url_for('environments') }}">Environment</a></li>
       <li class="primary label"><a href="{{ url_for('jobsets') }}">Jobsets</a></li>
+    </ul>
+  </div>
+  <div class="row">
+    <ul id="display_locked" style="visibility:hidden">
+      <li class="warning label"><a href="/">Jobset is running from </a><span id="locked_time"></span></li>
     </ul>
   </div>
   <div class="row">

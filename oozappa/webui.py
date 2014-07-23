@@ -11,9 +11,12 @@ from oozappa.fabrictools import FabricHelper
 import logging
 from uuid import uuid4
 from datetime import datetime
+import time
 
-from flask import Flask, render_template, url_for, redirect, Response, abort
+from flask import Flask, render_template, url_for, redirect, Response, abort, jsonify
 from flask_sockets import Sockets
+
+import filelock
 
 logging.basicConfig(level=logging.WARN, format='%(asctime)s %(levelname)s %(message)s')
 logger = logging.getLogger('oozappa')
@@ -47,6 +50,14 @@ sockets = Sockets(app)
 def _datetimefmt(d):
     return d and d.strftime("%Y/%m/%d %H:%M:%S") or ''
 
+LOCK_FILE_NAME = 'oozappa_lock_file'
+
+def _is_locked():
+    print('----- {0}'.format(os.path.exists(LOCK_FILE_NAME)))
+    return os.path.exists(LOCK_FILE_NAME)
+
+def _locked_time():
+    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.stat(LOCK_FILE_NAME).st_ctime))
 
 @sockets.route('/run_task')
 def run_task(ws):
@@ -61,8 +72,20 @@ def run_task(ws):
         helper = FabricHelper(data.get('fabric_path'))
         ws.send('specify task(s) below.\n  ' + '\n  '.join(helper.task_list()))
         return
-    with exec_fabric(ws, data['fabric_path']) as executor:
-        executor.doit(data['tasks'].split(' '))
+    lock = filelock.FileLock(LOCK_FILE_NAME)
+    try:
+        with lock.acquire(timeout=1):
+            with exec_fabric(ws, data['fabric_path']) as executor:
+                executor.doit(data['tasks'].split(' '))
+    except filelock.Timeout as err:
+        ws.send('''
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            Lock aquired another jobset from {0}
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+'''.format(_locked_time()))
+        return
 
 
 @sockets.route('/run_jobset')
@@ -70,36 +93,47 @@ def run_jobset(ws):
     message = ws.receive()
     if not message:
         return
-    data = json.loads(message)
-    jobset_id = data.get('jobset_id')
-    session = get_db_session()
-    jobset = session.query(Jobset).get(jobset_id)
-    executelog = ExecuteLog()
-    executelog.jobset = jobset
-    session.add(executelog)
-    session.commit()
-    logfile = None
-    if _settings.OOZAPPA_LOG:
-        executelog.logfile = os.path.join(_settings.OOZAPPA_LOG_BASEDIR,
-          '{0}.log'.format(uuid4().hex))
-        logfile = open(executelog.logfile, 'w')
-    for job in jobset.jobs:
-        with exec_fabric(ws, job.environment.execute_path) as executor:
-            executor.doit(job.tasks.split(' '), logfile)
-    else:
-        executelog.success = True
-        executelog.finished = datetime.now()
-        session.commit()
-        ws.send('\n&nbsp;\n&nbsp;\n')
-        ws.send('=' * 35)
-        ws.send('\n')
-        ws.send(u'[Oozappa:FINISHED] Jobset: {0} in {1} seconds.'.format(jobset.title,
-          executelog.execute_time()).encode('utf8'))
-        ws.send('\n')
-        ws.send('=' * 35)
-        ws.send('\n&nbsp;\n&nbsp;\n')
-    if logfile:
-        logfile.close()
+    lock = filelock.FileLock(LOCK_FILE_NAME)
+    try:
+        with lock.acquire(timeout=1):
+            data = json.loads(message)
+            jobset_id = data.get('jobset_id')
+            session = get_db_session()
+            jobset = session.query(Jobset).get(jobset_id)
+            executelog = ExecuteLog()
+            executelog.jobset = jobset
+            session.add(executelog)
+            session.commit()
+            logfile = None
+            if _settings.OOZAPPA_LOG:
+                executelog.logfile = os.path.join(_settings.OOZAPPA_LOG_BASEDIR,
+                  '{0}.log'.format(uuid4().hex))
+                logfile = open(executelog.logfile, 'w')
+            for job in jobset.jobs:
+                with exec_fabric(ws, job.environment.execute_path) as executor:
+                    executor.doit(job.tasks.split(' '), logfile)
+            else:
+                executelog.success = True
+                executelog.finished = datetime.now()
+                session.commit()
+                ws.send('\n&nbsp;\n&nbsp;\n')
+                ws.send('=' * 35)
+                ws.send('\n')
+                ws.send(u'[Oozappa:FINISHED] Jobset: {0} in {1} seconds.'.format(jobset.title,
+                  executelog.execute_time()).encode('utf8'))
+                ws.send('\n')
+                ws.send('=' * 35)
+                ws.send('\n&nbsp;\n&nbsp;\n')
+            if logfile:
+                logfile.close()
+    except filelock.Timeout as err:
+        ws.send('''
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            Lock aquired another jobset from {0}
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+'''.format(_locked_time()))
 
 
 @app.route('/')
@@ -202,5 +236,11 @@ def get_execute_log(id):
     with open(executelog.logfile, 'r') as f:
         logs = f.read()
     return Response(logs, mimetype='text/plain')
+
+@app.route('/is_running_something.json', methods=['GET'])
+def is_running_something():
+    if _is_locked():
+        return jsonify(dict(running=True, locked_time=_locked_time()))
+    return jsonify(dict(running=False))
 
 #gunicorn -t 3600 -k flask_sockets.worker oozappa.webui:app
