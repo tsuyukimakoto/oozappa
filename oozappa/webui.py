@@ -110,7 +110,18 @@ def run_jobset(ws):
                 logfile = open(executelog.logfile, 'w')
             for job in jobset.jobs:
                 with exec_fabric(ws, job.environment.execute_path) as executor:
-                    executor.doit(job.tasks.split(' '), logfile)
+                    if executor.doit(job.tasks.split(' '), logfile) != 0:
+                        executelog.success = False
+                        executelog.finished = datetime.now()
+                        session.commit()
+                        ws.send('\n&nbsp;\n&nbsp;\n')
+                        ws.send('=' * 35)
+                        ws.send('\n')
+                        ws.send(u'[Oozappa:FAILES] Jobset: {0} in {1} seconds.'.format(jobset.title,
+                          executelog.execute_time()).encode('utf8'))
+                        ws.send('\n')
+                        ws.send('=' * 35)
+                        ws.send('\n&nbsp;\n&nbsp;\n')
             else:
                 executelog.success = True
                 executelog.finished = datetime.now()
