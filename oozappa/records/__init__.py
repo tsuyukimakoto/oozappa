@@ -55,6 +55,9 @@ class Jobset(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String)
     description = Column(String)
+    sort_order = Column(Integer, server_default="1")
+
+    __mapper_args__ = {'order_by': 'Jobset.sort_order'}
 
     @property
     def jobs(self):

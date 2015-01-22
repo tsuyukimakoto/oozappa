@@ -14,7 +14,7 @@
     <thead><tr><th>Environment</th><th>TASK</th><th>Description</th></tr></thead>
     <tbody>
     {% for job in jobset.jobs %}
-    <tr>
+    <tr id="jobset[{{ job.id }}]">
         <td>{{ job.environment.name }}</td>
         <td>{{ job.tasks }}</td>
         <td>{{ job.description }}</td>

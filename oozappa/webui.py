@@ -2,6 +2,7 @@
 import os
 import sys
 import json
+import urlparse
 
 from oozappa import exec_fabric
 from oozappa.records import Environment, Job, Jobset, JobsetJobList, ExecuteLog, get_db_session, init as init_db
@@ -13,7 +14,7 @@ from uuid import uuid4
 from datetime import datetime
 import time
 
-from flask import Flask, render_template, url_for, redirect, Response, abort, jsonify
+from flask import Flask, render_template, url_for, redirect, Response, abort, jsonify, request
 from flask_sockets import Sockets
 
 import filelock
@@ -229,6 +230,20 @@ def create_jobset():
         return redirect(url_for('jobsets'))
     return render_template('create_jobset.html', form=form, job_list=session.query(Job).all())
 
+@app.route('/jobsets/reorder/', methods=['POST'])
+def reorder_jobset():
+    if request.headers['Content-Type'] != 'application/json':
+        print(request.headers['Content-Type'])
+        return jsonify(res='error'), 400
+    jobset_id_ordered = [int(x) for x in urlparse.parse_qs(request.json).get('jobset[]', [])]
+    session = get_db_session()
+    for i, jobset_id in enumerate(jobset_id_ordered):
+        _sort_order = i + 1
+        _jobset = session.query(Jobset).get(jobset_id)
+        if _jobset.sort_order != _sort_order:
+            _jobset.sort_order = _sort_order
+    session.commit()
+    return jsonify(res='ok')
 
 @app.route('/jobsets/<jobset_id>/', methods=['GET', 'POST'])
 def jobset(jobset_id):

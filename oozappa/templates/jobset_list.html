@@ -4,13 +4,35 @@
 
 {% block headline %}Available JobSet{% endblock %}
 
+{% block in_head %}
+  <script>
+    $(function() {
+      $('#jobset_list tbody').sortable({
+        update: function(event, ui) {
+          data = $(this).sortable('serialize');
+          $.ajax({
+              data:JSON.stringify(data),
+              dataType: 'json',
+              contentType: 'application/json',
+              type: 'POST',
+              url: '/jobsets/reorder/'
+          }).fail(function(hxr, status, err){
+            alert(err);
+          });
+        }
+      });
+      $('#jobset_list tbody').disableSelection();
+    });
+    </script>
+{% endblock %}
+
 {% block body %}
 <div>
-  <table class="striped rounded">
+  <table id="jobset_list" class="striped rounded">
   <thead><tr><th>Jobset title</th><th>Description</th></tr></thead>
     <tbody>
   {% for jobset in jobset_list %}
-      <tr>
+      <tr id="jobset_{{ jobset.id }}">
         <td><a href="{{ url_for('jobset', jobset_id=jobset.id) }}">{{ jobset.title }}</a></td>
         <td>{{ jobset.description }}</td>
       </tr>
