@@ -18,7 +18,7 @@ Adding new feature, modify Jobsets sort order on jobsets page.
 
 Adding new feature, modify a Job data on environ page.
 
-You need db migration if you use 0.84 or below::
+You need db migration if you use 0.8.4 or below::
 
   $ wget https://github.com/tsuyukimakoto/oozappa/raw/master/migration/to_0.8.5.zip
   $ unzip to_0.8.5.zip
