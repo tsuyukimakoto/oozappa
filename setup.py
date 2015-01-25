@@ -20,6 +20,11 @@ Adding new feature, modify a Job data on environ page.
 
 You need db migration if you use 0.84 or below::
 
+  $ wget https://github.com/tsuyukimakoto/oozappa/raw/master/migration/to_0.8.5.zip
+  $ unzip to_0.8.5.zip
+
+  (open alembic.ini and modify sqlalchemy.url to indicate your own oozappa's db.)
+
   $ alembic upgrade 1e26220da128
 
 0.8.4
