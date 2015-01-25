@@ -1,30 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}Oozappa - Environments ({{ environ.name }}){% endblock %}
+{% block title %}Oozappa - Job ({{ job.name }}) of Environments ({{ environ.name }}){% endblock %}
 
-{% block headline %}Environment{% endblock %}
+{% block headline %}Job{% endblock %}
 
 {% block body %}
 <div class="row">
-  <div class="xlarge btn default"><a href="#" onclick="$('#doc').toggle();">{{ environ.name }}</a></div>
-  <div id="doc" style="display: none"><pre>{{ environ_doc }}</pre></div>
+  <div class="xlarge btn default"><a href="#" onclick="$('#doc').toggle();">{{ job.name }}</a></div>
+  <div id="doc" style="display: none"><pre>{{ job.description }}</pre></div>
 </div>
-<div>
-  <h3>Registered Jobs</h3>
-  <table class="striped rounded">
-  <thead><tr><th>Name</th><th>Task</th><th>Description</th></tr></thead>
-    <tbody>
-  {% for job in environ.jobs %}
-      <tr>
-        <td><a href="{{ url_for('job', environment_id=environ.id, job_id=job.id) }}">{{ job.name }}</a></td>
-        <td>{{ job.tasks }}</td>
-        <td>{{ job.description }}</td>
-      </tr>
-  {% endfor %}
-    </tbody>
-  </table>
-</div>
-<h3 class="lead">create Job</h3>
+<h3 class="lead">edit Job</h3>
 <div class="row">
   {% if form.errors %}
     <div>
@@ -66,7 +51,7 @@
         <li class="field">{{ form.name(size=10, class_='wide text input') }} : {{ form.name.label(class_='inline') }}</li>
         <li class="field">{{ form.tasks(size=10, class_='wide text input') }} : {{ form.tasks.label(class_='inline') }}</li>
         <li class="field">{{ form.description(size=50, class_='wide input textarea') }} : {{ form.description.label(class_='inline') }}</li>
-        <li class="field"><input type="submit" value="ADD"></li>
+        <li class="field"><input type="submit" value="Update"></li>
       </ul>
     </fieldset>
   </form>

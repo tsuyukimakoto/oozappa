@@ -202,6 +202,33 @@ def environment(environment_id):
     return render_template('environment.html', form=form,
       environ=environ, environ_doc=helper.doc, error_message=error_message)
 
+@app.route('/emvironments/<environment_id>/job/<job_id>/', methods=['GET', 'POST'])
+def job(environment_id, job_id):
+    session = get_db_session()
+    environ = session.query(Environment).get(environment_id)
+    job = session.query(Job).get(job_id)
+    helper = FabricHelper(environ.execute_path)
+    error_message = None
+    form = JobForm(
+        name=job.name, description=job.description,
+        environment_id=job.environment_id,
+        tasks=job.tasks
+    )
+    if not environ:
+        abort(404)
+    if form.validate_on_submit():
+        not_found_tasks = helper.get_tasks(form.tasks.data.split(' ')).get('not_found')
+        if len(not_found_tasks) == 0:
+            job.name = form.name.data
+            job.description = form.description.data
+            job.tasks = form.tasks.data
+            job.environment = environ
+            session.commit()
+            return redirect(url_for('environment', environment_id=environment_id))
+        error_message = 'tasks [{0}] not found.'.format(','.join(not_found_tasks))
+    form.environment_id.data = environ.id
+    return render_template('job.html', form=form,
+      environ=environ, job=job, error_message=error_message)
 
 @app.route('/jobsets')
 def jobsets():
