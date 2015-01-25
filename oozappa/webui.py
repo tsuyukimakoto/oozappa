@@ -123,6 +123,7 @@ def run_jobset(ws):
                         ws.send('\n')
                         ws.send('=' * 35)
                         ws.send('\n&nbsp;\n&nbsp;\n')
+                        break
             else:
                 executelog.success = True
                 executelog.finished = datetime.now()
