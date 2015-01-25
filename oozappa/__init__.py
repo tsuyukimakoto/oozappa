@@ -8,7 +8,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 logger = logging.getLogger('oozappa')
 
-version_info = (0, 8, 4)
+version_info = (0, 8, 5)
 __version__ = ".".join([str(v) for v in version_info])
 
 

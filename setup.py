@@ -11,6 +11,17 @@ oozappa is 大雑把.
 Change logs.
 -------------------------------------------
 
+0.8.5
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Adding new feature, modify Jobsets sort order on jobsets page.
+
+Adding new feature, modify a Job data on environ page.
+
+You need db migration if you use 0.84 or below::
+
+  $ alembic upgrade 1e26220da128
+
 0.8.4
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
