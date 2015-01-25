@@ -18,12 +18,15 @@ Adding new feature, modify Jobsets sort order on jobsets page.
 
 Adding new feature, modify a Job data on environ page.
 
-You need db migration if you use 0.8.4 or below::
+You need db migration if you use 0.8.4 or below.
+
+::
 
   $ wget https://github.com/tsuyukimakoto/oozappa/raw/master/migration/to_0.8.5.zip
-  $ unzip to_0.8.5.zip
+  $ unzip to_0.8.5.zip && cd oozappa_to_0_8_5
 
-  (open alembic.ini and modify sqlalchemy.url to indicate your own oozappa's db.)
+  If you have not alembic installed. You need install it using pip or any way.
+  Open alembic.ini and modify sqlalchemy.url to indicate your own oozappa's db.
 
   $ alembic upgrade 1e26220da128
 
