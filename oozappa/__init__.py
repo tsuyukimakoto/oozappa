@@ -36,7 +36,7 @@ class exec_fabric:
 
     def doit(self, fabric_commands=[], logfile=None):
         start_time = time.time()
-        execute_commands = 'doit from running websocket: fab {0}'.format(' '.join(fabric_commands))
+        execute_commands = '<<doit from running websocket: fab {0}>>\n'.format(' '.join(fabric_commands))
         logger.debug(execute_commands)
         if logfile:
             logfile.write(execute_commands)
