@@ -66,11 +66,11 @@ def run_task(ws):
         return
     data = json.loads(message)
     if not data.get('fabric_path', None):
-        ws.send('need fabric_path')
+        ws.send(json.dumps({'output': 'need fabric_path'}))
         return
     if not data.get('tasks', None):
         helper = FabricHelper(data.get('fabric_path'))
-        ws.send('specify task(s) below.\n  ' + '\n  '.join(helper.task_list()))
+        ws.send(json.dumps({'output': 'specify task(s) below.\n  ' + '\n  '.join(helper.task_list())}))
         return
     lock = filelock.FileLock(LOCK_FILE_NAME)
     try:
@@ -78,13 +78,13 @@ def run_task(ws):
             with exec_fabric(ws, data['fabric_path']) as executor:
                 executor.doit(data['tasks'].split(' '))
     except filelock.Timeout as err:
-        ws.send('''
+        ws.send(json.dumps({'output':'''
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             Lock aquired another jobset from {0}
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-'''.format(_locked_time()))
+'''.format(_locked_time())}))
         return
 
 
@@ -115,37 +115,35 @@ def run_jobset(ws):
                         executelog.success = False
                         executelog.finished = datetime.now()
                         session.commit()
-                        ws.send('\n&nbsp;\n&nbsp;\n')
-                        ws.send('=' * 35)
-                        ws.send('\n')
-                        ws.send(u'[Oozappa:FAILES] Jobset: {0} in {1} seconds.'.format(jobset.title,
-                          executelog.execute_time()).encode('utf8'))
-                        ws.send('\n')
-                        ws.send('=' * 35)
-                        ws.send('\n&nbsp;\n&nbsp;\n')
+                        ws.send(json.dumps({'output': '\n&nbsp;\n&nbsp;\n'}))
+                        ws.send(json.dumps({'output': '=' * 35}))
+                        ws.send(json.dumps({'output': '\n'}))
+                        ws.send(json.dumps({'output': u'[Oozappa:FAILES] Jobset: {0} in {1} seconds.'.format(jobset.title, executelog.execute_time()).encode('utf8')}))
+                        ws.send(json.dumps({'output': '\n'}))
+                        ws.send(json.dumps({'output': '=' * 35}))
+                        ws.send(json.dumps({'output': '\n&nbsp;\n&nbsp;\n'}))
                         break
             else:
                 executelog.success = True
                 executelog.finished = datetime.now()
                 session.commit()
-                ws.send('\n&nbsp;\n&nbsp;\n')
-                ws.send('=' * 35)
-                ws.send('\n')
-                ws.send(u'[Oozappa:FINISHED] Jobset: {0} in {1} seconds.'.format(jobset.title,
-                  executelog.execute_time()).encode('utf8'))
-                ws.send('\n')
-                ws.send('=' * 35)
-                ws.send('\n&nbsp;\n&nbsp;\n')
+                ws.send(json.dumps({'output': '\n&nbsp;\n&nbsp;\n'}))
+                ws.send(json.dumps({'output': '=' * 35}))
+                ws.send(json.dumps({'output': '\n'}))
+                ws.send(json.dumps({'output': u'[Oozappa:FINISHED] Jobset: {0} in {1} seconds.'.format(jobset.title, executelog.execute_time()).encode('utf8')}))
+                ws.send(json.dumps({'output:': '\n'}))
+                ws.send(json.dumps({'output': '=' * 35}))
+                ws.send(json.dumps({'output': '\n&nbsp;\n&nbsp;\n'}))
             if logfile:
                 logfile.close()
     except filelock.Timeout as err:
-        ws.send('''
+        ws.send(json.dumps({'output': '''
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             Lock aquired another jobset from {0}
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-'''.format(_locked_time()))
+'''.format(_locked_time())}))
 
 
 @app.route('/')

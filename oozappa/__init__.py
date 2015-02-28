@@ -52,5 +52,5 @@ class exec_fabric:
             if logfile:
                 logfile.write(line)
             # print(line.strip())
-        self.wsckt.send('takes {0:.2f} sec'.format(time.time() - start_time))
+        self.wsckt.send(json.dumps({'output': 'takes {0:.2f} sec'.format(time.time() - start_time)}))
         return p.wait()
