@@ -4,6 +4,7 @@ import sys
 import subprocess
 import time
 import logging
+import json
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 logger = logging.getLogger('oozappa')
@@ -47,9 +48,9 @@ class exec_fabric:
             line = stderr.readline()
             if not line:
                 break
-            self.wsckt.send(line)
+            self.wsckt.send(json.dumps({'output': line}))
             if logfile:
                 logfile.write(line)
             # print(line.strip())
-        self.wsckt.send('takes {0:.2f} sec'.format(time.time() - start_time))
+        self.wsckt.send(json.dumps({'output': 'takes {0:.2f} sec'.format(time.time() - start_time)}))
         return p.wait()

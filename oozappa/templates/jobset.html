@@ -64,11 +64,12 @@
           var connect = function() {
             ws = new WebSocket(connect_to);
             ws.onmessage = function(e) {
+              var messages_from_server = JSON.parse(e.data);
               var over_count = $("#terminal *").length - 100; //TODO fixme
               for(var i = 0;i < over_count;i++) {
                 $("#terminal *").get(0).remove();
               }
-              jQuery.each(e.data.split("\n"), function(i, v) {
+              jQuery.each(messages_from_server.output.split("\n"), function(i, v) {
                 $("div#terminal").append('<div class="msg">' + v + '</div>');
               });
               $("div#terminal").scrollTop($("#terminal")[0].scrollHeight);
