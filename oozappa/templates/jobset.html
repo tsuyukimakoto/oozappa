@@ -84,9 +84,6 @@
               else if (messages_from_server.message_type === 4) {
                   $("div#result_message").replaceWith('<div id="result_message"><li class="danger alert">Fail</li></div>');
                   $("div#custom_progress").replaceWith("<div id=custom_progress><progress id='prg' max=100 value=0></progress>");
-                  jQuery.each(messages_from_server.output.split("\n"), function(i, v) {
-                    $("div#terminal").append('<div class="msg">' + v + '</div>');
-                  });
               }
               else {
                   jQuery.each(messages_from_server.output.split("\n"), function(i, v) {
