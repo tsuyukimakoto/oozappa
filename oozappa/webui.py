@@ -109,6 +109,7 @@ def run_jobset(ws):
                 executelog.logfile = os.path.join(_settings.OOZAPPA_LOG_BASEDIR,
                   '{0}.log'.format(uuid4().hex))
                 logfile = open(executelog.logfile, 'w')
+            ws.send(json.dumps({'message_type': exec_fabric.PROGRESS_BEGIN}))
             for job in jobset.jobs:
                 with exec_fabric(ws, job.environment.execute_path) as executor:
                     if executor.doit(job.tasks.split(' '), logfile) != 0:

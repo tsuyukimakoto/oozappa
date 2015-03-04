@@ -49,7 +49,6 @@ class exec_fabric:
         p = subprocess.Popen(["fab"] + fabric_commands,
           stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
         stderr = p.stdout
-        self.wsckt.send(json.dumps({'message_type': self.PROGRESS_BEGIN}))
         while True:
             line = stderr.readline()
             if not line:

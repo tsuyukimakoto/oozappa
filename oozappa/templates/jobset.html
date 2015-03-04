@@ -32,7 +32,7 @@
     <h2 class="lead">Running log</h2>
     <div id="result">
 		<div id="result_message"></div>
-        <progress id="prg" value=0 ></progress>
+		<div id="custom_progress"></div>
     </div>
     <div id="terminal">
     </div>
@@ -73,18 +73,17 @@
               for(var i = 0;i < over_count;i++) {
                 $("#terminal *").get(0).remove();
               }
-
               if (messages_from_server.message_type == '2') {
-				  $("div#result_message").replace('');
-                  $("#prg").replaceWith("<progress id='prg' ></progress></div>");
+                  $("div#custom_progress").replaceWith("<div id='custom_progress'><progress id='prg' max=100 ></progress></div>");
+                  $("div#result_message").replaceWith('<div id="result_message"></div>');
               }
               else if (messages_from_server.message_type == '3') {
-				  $("div#result_message").replaceWith('<li class="success alert">Success</li>');
-                  $("#prg").replaceWith("<progress id='prg' max=100 value=100></progress></div>");
+                  $("div#result_message").replaceWith('<div id="result_message"><li class="success alert">Success</li></div>');
+                  $("div#custom_progress").replaceWith("<div id='custom_progress'><progress id='prg' max=100 value=100></progress></div>");
               }
               else if (messages_from_server.message_type == '4') {
-				  $("div#result_message").replaceWith('<li class="danger alert">Fail</li>');
-                  $("#prg").replaceWith("<progress id='prg' max=100 value=0></progress></div>");
+                  $("div#result_message").replaceWith('<div id="result_message"><li class="danger alert">Fail</li></div>');
+                  $("div#custom_progress").replaceWith("<div id=custom_progress><progress id='prg' max=100 value=0></progress>");
                   jQuery.each(messages_from_server.output.split("\n"), function(i, v) {
                     $("div#terminal").append('<div class="msg">' + v + '</div>');
                   });
