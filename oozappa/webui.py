@@ -122,6 +122,7 @@ def run_jobset(ws):
                         ws.send(json.dumps({'output': '\n'}))
                         ws.send(json.dumps({'output': '=' * 35}))
                         ws.send(json.dumps({'output': '\n&nbsp;\n&nbsp;\n'}))
+                        ws.send(json.dumps({'message_type': exec_fabric.EXEC_FAILED}))
                         break
             else:
                 executelog.success = True
@@ -134,6 +135,7 @@ def run_jobset(ws):
                 ws.send(json.dumps({'output:': '\n'}))
                 ws.send(json.dumps({'output': '=' * 35}))
                 ws.send(json.dumps({'output': '\n&nbsp;\n&nbsp;\n'}))
+                ws.send(json.dumps({'message_type': exec_fabric.EXEC_SUCESSFUL}))
             if logfile:
                 logfile.close()
     except filelock.Timeout as err:

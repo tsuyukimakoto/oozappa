@@ -4,3 +4,16 @@
   background-color: #aaa;
   overflow: scroll;
 }
+
+#prg {
+  width: 100%;
+  height: 5px;
+}
+
+#done {
+ visibility: hidden;
+}
+
+#fail {
+ visibility: hidden;
+}

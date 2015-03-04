@@ -14,6 +14,11 @@ __version__ = ".".join([str(v) for v in version_info])
 
 
 class exec_fabric:
+    
+    PROGRESS_BEGIN = 2
+    EXEC_SUCESSFUL = 3
+    EXEC_FAILED = 4
+
     def __init__(self, wsckt, path):
         self.wsckt = wsckt
         self.initial_path = os.getcwd()  # TODO
@@ -44,6 +49,7 @@ class exec_fabric:
         p = subprocess.Popen(["fab"] + fabric_commands,
           stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
         stderr = p.stdout
+        self.wsckt.send(json.dumps({'message_type': self.PROGRESS_BEGIN}))
         while True:
             line = stderr.readline()
             if not line:
