@@ -109,6 +109,7 @@ def run_jobset(ws):
                 executelog.logfile = os.path.join(_settings.OOZAPPA_LOG_BASEDIR,
                   '{0}.log'.format(uuid4().hex))
                 logfile = open(executelog.logfile, 'w')
+            ws.send(json.dumps({'message_type': exec_fabric.PROGRESS_BEGIN}))
             for job in jobset.jobs:
                 with exec_fabric(ws, job.environment.execute_path) as executor:
                     if executor.doit(job.tasks.split(' '), logfile) != 0:
@@ -122,6 +123,7 @@ def run_jobset(ws):
                         ws.send(json.dumps({'output': '\n'}))
                         ws.send(json.dumps({'output': '=' * 35}))
                         ws.send(json.dumps({'output': '\n&nbsp;\n&nbsp;\n'}))
+                        ws.send(json.dumps({'message_type': exec_fabric.EXEC_FAILED}))
                         break
             else:
                 executelog.success = True
@@ -134,6 +136,7 @@ def run_jobset(ws):
                 ws.send(json.dumps({'output:': '\n'}))
                 ws.send(json.dumps({'output': '=' * 35}))
                 ws.send(json.dumps({'output': '\n&nbsp;\n&nbsp;\n'}))
+                ws.send(json.dumps({'message_type': exec_fabric.EXEC_SUCESSFUL}))
             if logfile:
                 logfile.close()
     except filelock.Timeout as err:

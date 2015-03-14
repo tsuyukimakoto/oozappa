@@ -14,6 +14,11 @@ __version__ = ".".join([str(v) for v in version_info])
 
 
 class exec_fabric:
+    
+    PROGRESS_BEGIN = 2
+    EXEC_SUCESSFUL = 3
+    EXEC_FAILED = 4
+
     def __init__(self, wsckt, path):
         self.wsckt = wsckt
         self.initial_path = os.getcwd()  # TODO
