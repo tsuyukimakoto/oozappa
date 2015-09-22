@@ -1,4 +1,4 @@
-"""add sort order to jobset
+"""add cli only flag to jobset
 
 Revision ID: 3479579b9dba
 Revises: 
