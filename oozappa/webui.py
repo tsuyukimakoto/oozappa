@@ -70,7 +70,7 @@ def run_jobset(ws):
             data = json.loads(message)
             jobset_id = data.get('jobset_id')
             with LogWebsocketCommunicator(ws, _settings.OOZAPPA_LOG_BASEDIR) as communicator:
-                communicator.write('[[webui]]\n')
+                # communicator.write('[[webui]]\n')
                 _run_jobset(jobset_id, communicator)
     except filelock.Timeout as err:
         ws.send(json.dumps({'output': '''

@@ -150,4 +150,4 @@ def run_jobset(jobset_id, communicator, cli=False):
         communicator.write('\n')
         communicator.write('=' * 35)
         communicator.write('\n&nbsp;\n&nbsp;\n')
-        communicator.write(exec_fabric.EXEC_SUCESSFUL)
+        communicator.controll(exec_fabric.EXEC_SUCESSFUL)
