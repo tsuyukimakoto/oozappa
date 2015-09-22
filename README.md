@@ -122,11 +122,13 @@ Open your web browser and browse http://localhost:8000/ .
 
 ## rapid execution
 
-Modify _Run fabric in raw_'s left hand side input to __staging__ and click _run_tasks_. You can see what tasks exists.
+rapid execution function removed(version 0.9.0).
 
-Then input __ls ps__ to right hand side input and click _run_tasks_ .
+~~Modify _Run fabric in raw_'s left hand side input to __staging__ and click _run_tasks_. You can see what tasks exists.~~
 
-That's it.
+~~Then input __ls ps__ to right hand side input and click _run_tasks_ .~~
+
+~~That's it.~~
 
 ## better way using sample
 
@@ -205,3 +207,49 @@ Run oozappa.create_environment with environment name(s).
     2014-04-20 16:43:26,544 INFO create environment : deployment
 
 Then you can write fabfile normally and execute via oozappa.
+
+
+## run jobset from zappa command.
+
+### list jobsets
+
+    $ zappa list
+    ----------------------------------------
+    |id:001|CLI_ONLY:False|title:デプローイのテスト１|
+    |id:002|CLI_ONLY:True|title:デプロイプリント|
+    ----------------------------------------
+
+### run jobset
+
+    $ zappa run_jobset --jobset 1
+
+### make jobset runnable only cli
+
+Only jobset which CLI_ONLY flag is False can run using webui.
+
+You can set CLI_ONLY flag to True with zappa command.
+
+    $ zappa manage
+    <manage:/Users/makoto/oozappa/oozappa>
+     commands
+        -> q: quit
+        -> c: Modify Jobset's CLI Flag.
+        -> l: List Jobsets
+        -> n: next
+    c
+    ----------------------------------------
+    |id:001|CLI_ONLY:False|title:デプローイのテスト１|
+    |id:002|CLI_ONLY:True|title:デプロイプリント|
+    ----------------------------------------
+    Which Jobset id?2
+    ----------------------------------------
+    |id:001|CLI_ONLY:False|title:デプローイのテスト１|
+    |id:002|CLI_ONLY:False|title:デプロイプリント|
+    ----------------------------------------
+     commands
+        -> q: quit
+        -> c: Modify Jobset's CLI Flag.
+        -> l: List Jobsets
+        -> n: next
+    q
+

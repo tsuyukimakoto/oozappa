@@ -56,6 +56,7 @@ class Jobset(Base):
     title = Column(String)
     description = Column(String)
     sort_order = Column(Integer, server_default="1")
+    cli_only = Column(Boolean)
 
     __mapper_args__ = {'order_by': 'Jobset.sort_order'}
 

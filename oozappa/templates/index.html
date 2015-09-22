@@ -19,16 +19,6 @@
   </table>
   </div>
   <div>
-  <hr />
-  <h2 class="lead">Run fabric in raw.</h2>
-    <form id="fabric_task" method='POST' action='#'>
-        <input name="fabric_path" id="fabric_path" value="staging"/>
-        <input name="tasks" id="tasks" value="" />
-        <input type="submit" value="run tasks">
-  <div>
-    <div id="terminal">
-    </div>
-  </div>
   {% if executelog_list %}
   <div>
     <h3 class="lead">Execute Logs</h3>
@@ -53,32 +43,4 @@
     </table>
   </div>
   {% endif %}
-  <script type="text/javascript">
-        $(document).ready(function(){
-          var ws;
-          var connect_to = 'ws://' + document.domain + ':' + location.port + '/run_task'
-          var connect = function() {
-            ws = new WebSocket(connect_to);
-            ws.onmessage = function(e) {
-              var messages_from_server = JSON.parse(e.data);
-              var over_count = $("#terminal *").length - 100; //TODO fixme
-              for(var i = 0;i < over_count;i++) {
-                $("#terminal *").get(0).remove();
-              }
-              jQuery.each(messages_from_server.output.split("\n"), function(i, v) {
-                $("div#terminal").append('<div class="msg">' + v + '</div>');
-              });
-              $("div#terminal").scrollTop($("#terminal")[0].scrollHeight);
-            };
-            ws.onclose = function(e) {
-              connect();
-            }
-          };
-          connect();
-          $('form#fabric_task').submit(function(event) {
-              ws.send(JSON.stringify({fabric_path: $('#fabric_path').val(), tasks: $('#tasks').val()}));
-              return false;
-          });
-        });
-    </script>
 {% endblock %}

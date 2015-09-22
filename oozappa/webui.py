@@ -4,24 +4,23 @@ import sys
 import json
 import urlparse
 
-from oozappa import exec_fabric
-from oozappa.records import Environment, Job, Jobset, JobsetJobList, ExecuteLog, get_db_session, init as init_db
+from oozappa import exec_fabric, run_jobset as _run_jobset, LogWebsocketCommunicator
+from oozappa.records import (Environment, Job, Jobset, JobsetJobList,
+                             ExecuteLog, get_db_session, init as init_db)
 from oozappa.forms import EnvironmentForm, JobForm, JobSetForm
 from oozappa.fabrictools import FabricHelper
 
 import logging
 from uuid import uuid4
-from datetime import datetime
 import time
 
-from flask import Flask, render_template, url_for, redirect, Response, abort, jsonify, request
+from flask import (Flask, render_template, url_for, redirect, Response,
+                   abort, jsonify, request)
 from flask_sockets import Sockets
 
 import filelock
 
-logging.basicConfig(level=logging.WARN, format='%(asctime)s %(levelname)s %(message)s')
-logger = logging.getLogger('oozappa')
-# logger.setLevel(logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = Flask('oozappa')
 from oozappa.config import get_config
@@ -59,34 +58,6 @@ def _is_locked():
 def _locked_time():
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.stat(LOCK_FILE_NAME).st_ctime))
 
-@sockets.route('/run_task')
-def run_task(ws):
-    message = ws.receive()
-    if not message:
-        return
-    data = json.loads(message)
-    if not data.get('fabric_path', None):
-        ws.send(json.dumps({'output': 'need fabric_path'}))
-        return
-    if not data.get('tasks', None):
-        helper = FabricHelper(data.get('fabric_path'))
-        ws.send(json.dumps({'output': 'specify task(s) below.\n  ' + '\n  '.join(helper.task_list())}))
-        return
-    lock = filelock.FileLock(LOCK_FILE_NAME)
-    try:
-        with lock.acquire(timeout=1):
-            with exec_fabric(ws, data['fabric_path']) as executor:
-                executor.doit(data['tasks'].split(' '))
-    except filelock.Timeout as err:
-        ws.send(json.dumps({'output':'''
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-            Lock aquired another jobset from {0}
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-'''.format(_locked_time())}))
-        return
-
 
 @sockets.route('/run_jobset')
 def run_jobset(ws):
@@ -98,47 +69,9 @@ def run_jobset(ws):
         with lock.acquire(timeout=1):
             data = json.loads(message)
             jobset_id = data.get('jobset_id')
-            session = get_db_session()
-            jobset = session.query(Jobset).get(jobset_id)
-            executelog = ExecuteLog()
-            executelog.jobset = jobset
-            session.add(executelog)
-            session.commit()
-            logfile = None
-            if _settings.OOZAPPA_LOG:
-                executelog.logfile = os.path.join(_settings.OOZAPPA_LOG_BASEDIR,
-                  '{0}.log'.format(uuid4().hex))
-                logfile = open(executelog.logfile, 'w')
-            ws.send(json.dumps({'message_type': exec_fabric.PROGRESS_BEGIN}))
-            for job in jobset.jobs:
-                with exec_fabric(ws, job.environment.execute_path) as executor:
-                    if executor.doit(job.tasks.split(' '), logfile) != 0:
-                        executelog.success = False
-                        executelog.finished = datetime.now()
-                        session.commit()
-                        ws.send(json.dumps({'output': '\n&nbsp;\n&nbsp;\n'}))
-                        ws.send(json.dumps({'output': '=' * 35}))
-                        ws.send(json.dumps({'output': '\n'}))
-                        ws.send(json.dumps({'output': u'[Oozappa:FAILES] Jobset: {0} in {1} seconds.'.format(jobset.title, executelog.execute_time()).encode('utf8')}))
-                        ws.send(json.dumps({'output': '\n'}))
-                        ws.send(json.dumps({'output': '=' * 35}))
-                        ws.send(json.dumps({'output': '\n&nbsp;\n&nbsp;\n'}))
-                        ws.send(json.dumps({'message_type': exec_fabric.EXEC_FAILED}))
-                        break
-            else:
-                executelog.success = True
-                executelog.finished = datetime.now()
-                session.commit()
-                ws.send(json.dumps({'output': '\n&nbsp;\n&nbsp;\n'}))
-                ws.send(json.dumps({'output': '=' * 35}))
-                ws.send(json.dumps({'output': '\n'}))
-                ws.send(json.dumps({'output': u'[Oozappa:FINISHED] Jobset: {0} in {1} seconds.'.format(jobset.title, executelog.execute_time()).encode('utf8')}))
-                ws.send(json.dumps({'output:': '\n'}))
-                ws.send(json.dumps({'output': '=' * 35}))
-                ws.send(json.dumps({'output': '\n&nbsp;\n&nbsp;\n'}))
-                ws.send(json.dumps({'message_type': exec_fabric.EXEC_SUCESSFUL}))
-            if logfile:
-                logfile.close()
+            with LogWebsocketCommunicator(ws, _settings.OOZAPPA_LOG_BASEDIR) as communicator:
+                communicator.write('[[webui]]\n')
+                _run_jobset(jobset_id, communicator)
     except filelock.Timeout as err:
         ws.send(json.dumps({'output': '''
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

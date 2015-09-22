@@ -33,7 +33,6 @@ class OozappaSetting(dict):
   >>> assert(settings.spam == 456)
   >>> assert(settings.ham == 123.0)
     '''
-    
     def __init__(self, *args, **kwargs):
         for d in args:
             if isinstance(d, collections.Mapping):

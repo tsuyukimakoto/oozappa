@@ -30,6 +30,11 @@
     </tbody>
     </table>
   </div>
+  {% if jobset.cli_only %}
+  <div>
+    <h2>CLI Only</h2>
+  </div>
+  {% else %}
   <div>
     <form id="fabric_jobset" method='POST' action='#'>
         <input type="hidden" name="jobset_id" id="jobset_id" value="{{ jobset.id }}"/>
@@ -44,6 +49,7 @@
     <div id="terminal">
     </div>
   </div>
+  {% endif %}
   {% if executelog_list %}
   <div>
     <h3 class="lead">Execute Logs</h3>
