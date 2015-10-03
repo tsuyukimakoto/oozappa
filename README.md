@@ -1,6 +1,8 @@
 oozappa
 =======
 
+[![Join the chat at https://gitter.im/tsuyukimakoto/oozappa](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/tsuyukimakoto/oozappa?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Fabric task runner and helper. Execute tasks via web browser.
 
 oozappa is 大雑把.
