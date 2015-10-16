@@ -4,11 +4,7 @@
 
 {% block headline %}
   Jobset {{ jobset.title }}
-  <script type="text/javascript">
-    window.onbeforeunload = function() {
-      return 'Do not close while running the jobset.';
-    }
-  </script>
+
 {% endblock %}
 
 {% block body %}
