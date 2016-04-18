@@ -11,6 +11,23 @@ oozappa is 大雑把.
 Change logs.
 -------------------------------------------
 
+0.9.0
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Adding new subcommands to zappa.
+
+  * list
+  * run_jobset
+  * manage
+
+Removed rapid execution.
+
+Adding cli_only flag to Jobset.Now set cli_only flag using zappa manage. Now you can make Jobset can't run from web ui.
+
+Decoupling webui from fabric execution(Error doesn't occur even if connection reset).
+
+Show comfirm dialog before leaving web ui. and better ux. thank you yusuke furukawa.
+
 0.8.5
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
