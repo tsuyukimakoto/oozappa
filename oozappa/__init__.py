@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(message)s')
 logger = logging.getLogger(__name__)
 
-version_info = (0, 9, 0)
+version_info = (0, 9, 1)
 __version__ = ".".join([str(v) for v in version_info])
 
 
