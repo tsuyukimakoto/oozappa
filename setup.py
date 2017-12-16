@@ -11,6 +11,15 @@ oozappa is 大雑把.
 Change logs.
 -------------------------------------------
 
+0.9.1
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Fixed bug, zappa init command generate illegal path. Thank you sugamasao!
+
+    https://github.com/tsuyukimakoto/oozappa/pull/20
+
+* Fixed image path of README file
+
 0.9.0
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -223,7 +232,7 @@ ___________________________
 
 * Add 3 more.
 
-.. image:: https://dl.dropboxusercontent.com/u/382460/oozappa/readme/environments.png
+.. image:: https://raw.github.com/wiki/tsuyukimakoto/oozappa/images/readme/environments.png
   :alt: environments
 
 create job in each environments.
@@ -235,7 +244,7 @@ _________________________________
 
   * Click task from Possible tasks in order
 
-.. image:: https://dl.dropboxusercontent.com/u/382460/oozappa/readme/create_job.png
+.. image:: https://raw.github.com/wiki/tsuyukimakoto/oozappa/images/readme/create_job.png
   :alt: job
 
 create jobset
@@ -245,7 +254,7 @@ ___________________________
 
 * Click jobs you'd like to execute once.
 
-.. image:: https://dl.dropboxusercontent.com/u/382460/oozappa/readme/create_jobset.png
+.. image:: https://raw.github.com/wiki/tsuyukimakoto/oozappa/images/readme/create_jobset.png
   :alt: jobset
 
 
@@ -263,7 +272,7 @@ ___________________________
 
   * You see Execute Logs and show raw log when you click success (or fail).
 
-.. image:: https://dl.dropboxusercontent.com/u/382460/oozappa/readme/jobset.png
+.. image:: https://raw.github.com/wiki/tsuyukimakoto/oozappa/images/readme/jobset.png
   :alt: running jobset
 
 How to create your own
