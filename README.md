@@ -143,7 +143,7 @@ rapid execution function removed(version 0.9.0).
 	* execute_path: constructiton
 * Add 3 more.
 
-![environments](https://dl.dropboxusercontent.com/u/382460/oozappa/readme/environments.png "environments")
+![environments](https://raw.github.com/wiki/tsuyukimakoto/oozappa/images/readme/environments.png "environments")
 
 ### create job in each environments.
 
@@ -151,14 +151,14 @@ rapid execution function removed(version 0.9.0).
 * Create new Job.
 	* Click task from Possible tasks in order
 
-![job](https://dl.dropboxusercontent.com/u/382460/oozappa/readme/create_job.png "job")
+![job](https://raw.github.com/wiki/tsuyukimakoto/oozappa/images/readme/create_job.png "job")
 
 ### create jobset
 
 * Click jobset button via top menu.
 * Click jobs you'd like to execute once.
 
-![jobset](https://dl.dropboxusercontent.com/u/382460/oozappa/readme/create_jobset.png "jobset")
+![jobset](https://raw.github.com/wiki/tsuyukimakoto/oozappa/images/readme/create_jobset.png "jobset")
 
 ### run jobset
 
@@ -169,7 +169,7 @@ rapid execution function removed(version 0.9.0).
 * Reload page when jobset done. or Go to top(via navigation button)
 	* You see Execute Logs and show raw log when you click success (or fail).
 
-![runnig jobset](https://dl.dropboxusercontent.com/u/382460/oozappa/readme/jobset.png "running jobset")
+![runnig jobset](https://raw.github.com/wiki/tsuyukimakoto/oozappa/images/readme/jobset.png "running jobset")
 
 How to create your own
 =======
