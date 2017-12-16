@@ -44,7 +44,7 @@ def _create_database_path(sqlite_stored_path):
             sqlite_stored_path = os.path.join(os.path.abspath(os.path.curdir), sqlite_stored_path)
         sqlite_stored_path = os.path.abspath(sqlite_stored_path)
         _ensure_directory(sqlite_stored_path)
-        sqlite_stored_path = 'sqlite:///{0}'.format(sqlite_stored_path)
+    sqlite_stored_path = 'sqlite:///{0}'.format(sqlite_stored_path)
     return sqlite_stored_path
 
 
