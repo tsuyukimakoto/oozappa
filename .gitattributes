@@ -1,0 +1,20 @@
+# Source files
+# ============
+*.pxd       text
+*.py        text
+*.py3       text
+*.pyw       text
+*.pyx       text
+
+# Binary files
+# ============
+*.db        binary
+*.p         binary
+*.pkl       binary
+*.pyc       binary
+*.pyd       binary
+*.pyo       binary
+
+# ignore css and html
+oozappa/static/* linguist-vendored
+templates/* linguist-vendored
