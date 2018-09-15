@@ -365,6 +365,6 @@ setup(name='oozappa',
       package_data={'oozappa': ['_structure/_environment/vars.py','_structure/_environment/*/*', '_structure/_environment/templates/*',
         '_structure/common/vars.py','_structure/common/__init__.py','_structure/common/*/*', 'static/css/*', 'templates/*']},
       include_package_data=True,
-      install_requires=['Fabric>=1.8.3','Flask-WTF>=0.9.5','Flask-SQLAlchemy>=1.0','Flask-Sockets>=0.1',
-        'Jinja2>=2.7.2', 'Pygments>=1.6', 'gevent-websocket>=0.9.3','gunicorn>=18.0','filelock>=0.2.0'],
+      install_requires=['Fabric==1.8.3','Flask-WTF==0.9.5','Flask-SQLAlchemy==1.0','Flask-Sockets==0.1',
+        'Jinja2==2.7.2', 'Pygments==1.6', 'gevent-websocket==0.9.3','gunicorn==18.0','filelock==0.2.0'],
      )
